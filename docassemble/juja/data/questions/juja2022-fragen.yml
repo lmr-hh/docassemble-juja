@@ -1,7 +1,23 @@
 ---
 default screen parts:
   under: |
-    Später Fortsetzen
+    ---
+    <a class="btn btn-secondary" href="${ url_action('Pause') }">Später fortsetzen</a>
+---
+event: Pause
+question: Später fortsetzen
+subquestion: |
+  Sie können die Anmeldung unterbrechen und später fortsetzen. Notieren Sie sich
+  dazu folgenden Link:
+  
+  ```
+  ${ interview_url() }
+  ```
+  
+  Öffnen Sie diesen Link, um die Anmeldung zu einem späteren Zeitpunkt
+  fortzusetzen.
+buttons:
+  - Weiter: continue
 ---
 sections:
   - Ensemble
@@ -47,16 +63,16 @@ field: Einleitung
 section: Persönliche Daten
 question: Einleitung
 subquestion: |
-    % if testmodus:
+  % if testmodus:
   <div class="alert alert-warning" role="alert">
   Die Anmeldung wird im Testmodus ausgefüllt. Die Ergebnisse werden nicht
   automatisch übermittelt.
   </div>
   % endif
   
-  Liebe Bigbandleiter*innen, liebe Jazzer*innen,
+  Liebe Bigbandleiter\*innen, liebe Jazzer\*innen,
   
-  herzlich willkommen bei der Anmeldung zum Landeswettbewerb *Jugend Jazzt*
+  herzlich willkommen bei der Anmeldung zum Landeswettbewerb **Jugend Jazzt**
   2022. Wir freuen uns sehr über Ihr Interesse.
   
   Bitte füllen Sie diese Anmeldung vollständig aus. Im Laufe der Anmeldung
@@ -75,7 +91,7 @@ subquestion: |
   [Organisationsteam vom Landeswettbewerb](mailto:juja@lmr-hh.de) Jugend Jazzt
   Hamburg in Verbindung:
   
-  - E-Mail: juja@lmr-hh.de
+  - E-Mail: [juja@lmr-hh.de](mailto:juja@lmr-hh.de)
   - Telefon: 040 6452069
   
   Beachten Sie, dass Ihre Anmeldung erst als eingereicht gilt, wenn Sie die
@@ -122,6 +138,7 @@ fields:
   - Sonstige Präsenzen: ensemble.presences
     datatype: text
     input type: area
+    required: False
   - Foto des Ensembles: ensemble.photo
     datatype: file
     accept: "'image/jpeg, image/png'"
@@ -163,7 +180,7 @@ fields:
     : newsletter
     datatype: yesnowide
 validation code: |
-  if admin_contact.phone_number and not phone_number_is_valid(person.phone_number, "DE"):
+  if admin_contact.phone_number and not phone_number_is_valid(admin_contact.phone_number, "DE"):
     validation_error('Bitte geben Sie eine gültige Telefonnummer ein.', field='admin_contact.phone_number')
 ---
 id: juja-2022/rechnung
@@ -193,7 +210,7 @@ fields:
   - Ort: admin_contact.address.city
     default: ${ admin_contact.address.city }
 validation code: |
-  if billing_contact.phone_number and not phone_number_is_valid(person.phone_number, "DE"):
+  if billing_contact.phone_number and not phone_number_is_valid(billing_contact.phone_number, "DE"):
     validation_error('Bitte geben Sie eine gültige Telefonnummer ein.', field='billing_contact.phone_number')
 ---
 id: juja-2022/werke
@@ -289,16 +306,16 @@ review:
     button: |
       ## Angaben zum Ensemble
       
-      |Feld |Ihre Angabe |
-      |-----|------------|
-      |Name | ${ensemble.name } |
-      |Künstlerische Leitung | ${ ensemble.leader } ${ '<' + ensemble.leader_mail + '>' if ensemble.leader_mail else '' } |
-      |Größe | ${ ensemble.size } |
-      |Homepage | ${ ensemble.homepage } |
-      |Facebook | ${ ensemble.facebook } |
-      |Twitter | ${ ensemble.twitter } |
-      |Instagram | ${ ensemble.instagram } |
-      |Sonstige Präsenzen | ${ ensemble.presences } |
+      | Feld                  | Ihre Angabe                                                                                |
+      |-----------------------|--------------------------------------------------------------------------------------------|
+      | Name                  | ${ensemble.name }                                                                          |
+      | Künstlerische Leitung | ${ ensemble.leader } ${ '<' + ensemble.leader_mail + '>' if ensemble.leader_mail else '' } |
+      | Größe                 | ${ ensemble.size }                                                                         |
+      | Homepage              | ${ ensemble.homepage }                                                                     |
+      | Facebook              | ${ ensemble.facebook }                                                                     |
+      | Twitter               | ${ ensemble.twitter }                                                                      |
+      | Instagram             | ${ ensemble.instagram }                                                                    |
+      | Sonstige Präsenzen    | ${ ensemble.presences }                                                                    |
       
       ${ ensemble.photo }
       
@@ -307,25 +324,25 @@ review:
     button: |
       ## Administrativer Kontakt
 
-      |Feld          |Ihre Angabe               |
-      |--------------|--------------------------|
-      |Name          | ${ admin_contact.name }         |
-      |Funktion  | ${ admin_contact.role } |
-      |E-Mail        | ${ admin_contact.email }        |
-      |Telefonnummer | ${ admin_contact.phone_number } |
-      |Adresse       | ${ adresse(admin_contact) }     |
-      |Newsletter-Anmeldung    | ${ newsletter } |
+      | Feld                 | Ihre Angabe                     |
+      |----------------------|---------------------------------|
+      | Name                 | ${ admin_contact.name }         |
+      | Funktion             | ${ admin_contact.role }         |
+      | E-Mail               | ${ admin_contact.email }        |
+      | Telefonnummer        | ${ admin_contact.phone_number } |
+      | Adresse              | ${ adresse(admin_contact) }     |
+      | Newsletter-Anmeldung | ${ newsletter }                 |
 
   - Angaben ändern: Rechnungsdaten
     button: |
       ## Rechnungskontakt
       
-      |Feld          |Ihre Angabe               |
-      |--------------|--------------------------|
-      |Name          | ${ billing_contact.name }         |
-      |E-Mail        | ${ billing_contact.email }        |
-      |Telefonnummer | ${ billing_contact.phone_number } |
-      |Adresse       | ${ adresse(admin_contact) }     |
+      | Feld          | Ihre Angabe                       |
+      |---------------|-----------------------------------|
+      | Name          | ${ billing_contact.name }         |
+      | E-Mail        | ${ billing_contact.email }        |
+      | Telefonnummer | ${ billing_contact.phone_number } |
+      | Adresse       | ${ adresse(admin_contact) }       |
 
   - Erneut ansehen: Teilnahmebedingungen
     button: |
