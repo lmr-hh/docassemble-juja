@@ -1,0 +1,156 @@
+---
+features:
+  navigation: true
+  hide navbar: false
+  hide standard menu: true
+  labels above fields: true
+  javascript: actions.js
+---
+objects:
+  ensemble: DAObject
+  admin_contact: Individual
+  billing_contact: Person
+  conditions: DAObject
+  preferred_times: DAObject
+  redis: DARedis
+---
+modules:
+  - .util
+---
+# Dieser Abschnitt sollte nicht verändert werden.
+include:
+  - config.yml
+  - tasks.yml
+  - defs.yml
+  - juja-fragen.yml
+---
+# Die Metadaten konfigurieren das Erscheinungsbild der Anmeldungen (z.B. den
+# Titel). Mögliche Felder sind hier dokumentiert:
+# https://docassemble.org/docs/initial.html#metadata
+metadata:
+  title: Landeswettbewerb "Jugend jazzt" für Jazzorchester Hamburg 2022
+  tab title: Anmeldung Jugend Jazzt
+  short title: Jugend Jazzt
+  logo: '<img src="https://cdn.lmr-hh.de/logos/juja.png" height="27">'
+  description:
+    Dies ist die Anmeldung zum Landeswettbewerb "Jugend Jazzt" für Jazzorchester
+    Hamburg.
+  exit url: https://jugendjazzt-hamburg.de/
+  revision_date: 2022-08-15
+---
+# In diesem Abschnitt werden die Anmeldungen sowie die Automatisierung
+# konfiguriert. Die einzelnen Felder sind separat dokumentiert.
+variable name: daten
+data:
+  # Das Aktivieren des Testmodus verhindert, dass Anmeldungen automatisch
+  # archiviert werden. Stattdessen wird eine Zusammenfassung der Aktionen an die
+  # angegebene E-Mail geschickt, in der steht, was bei ausgeschaltetem
+  # Testmodus passiert wäre.
+  Testmodus: true
+
+  # Speichert alle angegebenen Daten automatisch ab. Daten werden in die Tabelle
+  # des Dokuments eingetragen. PDFs werden in den Ordner archiviert.
+  Anmeldungen:
+    Bibliothek: b!Y5fzR85ixEm47dV8Qrkq3CL89XMR2F9MtpYy8ZkCvooW0mTd6lmzQIc9uJUAtP4v
+    Ordner: 01EVPK7L5M2BF5ZA5O45DKQ27IKCDQ3CBK
+    Dokument: 01EVPK7L6L2PTFCIFX5VGLBTYRDNF2BHQK
+    Tabelle: "{8D9DB907-4FC4-4A4A-A843-0CCB5EAA702B}"
+
+  # Die hier angegebenen Personen erhalten automatisch eine Benachrichtigung,
+  # wenn eine Anmeldung abgeschickt wird.
+  E-Mail Benachrichtigung: []
+
+  # Dieses Mailgun Template wird zum Verschicken von E-Mails benutzt. Es sollte
+  # die Variable {{{ content }}} enthalten.
+  Mailgun Vorlage: lmr-anmeldung
+---
+# Der Testmodus wird über einen URL-Parameter oder eine Konfigurationsvariable
+# festgelegt.
+code: testmodus = url_args.get('test', False) or daten.get("Testmodus", False)
+---
+code: |
+  key = "juja_rechnungsnummer"
+  if testmodus:
+    key = key + "_test"
+  month = current_datetime(timezone="Europe/Berlin").format_datetime('M')
+  with redis.lock(key + "-lock", timeout=5):
+    redis.set(key, 250, nx=True)
+    redis.incr(key)
+    strval = str(redis.get(key).decode()).zfill(3)
+    rechnungsnummer = f"A-22-{month}-{strval}"
+  if testmodus:
+    rechnungsnummer = rechnungsnummer + "-test"
+---
+code: |
+  rechnungsdatum = today()
+---
+# Das Anmeldeformular als PDF. Hier können Dateiname und -inhalt gesetzt werden.
+# Der variable name sowie die valid formats sollten nicht verändert werden.
+attachment:
+  name: Anmeldung ${ ensemble }
+  # Dies ist der Dateiname, der u.A. im Mailanhang verwendet wird.
+  filename: Anmeldung ${ ensemble }
+  # Dies ist der Dateiname des Templates. Diese Datei muss sich im `templates`
+  # Ordner befinden.
+  docx template file: Anmeldung.docx
+  # Die folgendne beiden Zeilen sollten nicht verändert werden
+  variable name: anmeldeformular
+  valid formats: [pdf]
+---
+attachment:
+  name: Rechnung ${ ensemble }
+  filename: Rechnung ${ ensemble }
+  docx template file: Rechnung.docx
+  variable name: rechnungsformular
+  valid formats: [pdf]
+---
+# Der Inhalt der E-Mail, die an neu angemeldete Mitglieder geschickt wird. Der
+# Wert von template sollte nicht verändert werden.
+template: person_email
+# Der E-Mail-Betreff
+subject: Ihre Anmeldung zur Fachtagung Musik und Demenz
+# Diese Datei enthält den Mailinhalt (die Datei befindet sich im `templates`
+# Ordner).
+content file: MuD E-Mail.md
+---
+# Der Inhalt der E-Mail, die als Benachrichtigung bei neuen Anmeldungen
+# versendet wird. Der Wert von template sollte nicht verändert werden.
+template: orga_email
+# Der E-Mail-Betreff
+subject: ${ person.name } hat sich zum MuD-Tagung angemeldet
+# Diese Datei enthält den Mailinhalt (die Datei befindet sich im `templates`
+# Ordner).
+content file: Benachrichtigung.md
+---
+template: testergebnis
+usedefs: [test_defs]
+content file: Testmodus.md
+---
+# Startet alle Hintergrundaufgaben und aktiviert den Wartebildschirm, bis diese
+# beendet sind.
+code: |
+  tasks = [
+      save_data_task,
+      member_email_task,
+      orga_email_task,
+      archive_registration_task,
+      archive_invoice_task
+  ]
+  if discount and discount_proof:
+    tasks.append(archive_discount_proof_task)
+  if not all(task is None or task.ready() for task in tasks):
+    Warten
+  else:
+    Abschicken = True
+---
+# Wenn nach der Anmeldung gefragt wird, wird diese im Hintergrund erstellt.
+# Währenddessen wird ein Wartebildschirm gezeigt, Dies ist dazu da, dass der
+# "Absenden" Schritt einfach übersprungen werden kann.
+sets: anmeldung
+need: anmeldung_task
+code: Warten
+---
+sets: rechnung
+need: [rechnungsnummer, rechnung_task]
+code: Warten
+---

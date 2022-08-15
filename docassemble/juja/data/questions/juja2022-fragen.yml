@@ -1,0 +1,383 @@
+---
+default screen parts:
+  under: |
+    Später Fortsetzen
+---
+sections:
+  - Ensemble
+  - Administrativer Kontakt
+  - Rechnungskontakt
+  - Anmeldedetails
+  - Ihre Anmeldung
+---
+# Die Reihenfolge, in der Fragen gestellt werden. Dies ist eine erweiterte
+# Funktion, die nicht leichtfertig verändert werden sollte.
+mandatory: True
+code: |
+  # Anmeldefrist
+  Konfiguration
+  Einleitung
+  Ensemble
+  Kontaktdaten
+  Rechnungsdaten
+  Werke
+  
+  Teilnahmebedingungen
+  Kontrolle
+  Abschicken
+  if testmodus:
+    Testergebnisse
+  else:
+    Fertig
+---
+event: Anmeldefrist
+section: Persönliche Daten
+question: Anmeldefrist abgelaufen
+subquestion: |
+  Wir freuen uns über Ihr Interesse am Landeswettbewerb Jugend Jazzt Hamburg.
+  Leider ist die Anmeldefrist zur Teilnahme bereits abgelaufen.
+
+  Wenn Sie sich bereits angemeldet haben, erhalten Sie per E-Mail alle weiteren
+  Informationen.
+buttons:
+  - Ende: exit
+---
+id: juja-2022/intro
+field: Einleitung
+section: Persönliche Daten
+question: Einleitung
+subquestion: |
+    % if testmodus:
+  <div class="alert alert-warning" role="alert">
+  Die Anmeldung wird im Testmodus ausgefüllt. Die Ergebnisse werden nicht
+  automatisch übermittelt.
+  </div>
+  % endif
+  
+  Liebe Bigbandleiter*innen, liebe Jazzer*innen,
+  
+  herzlich willkommen bei der Anmeldung zum Landeswettbewerb *Jugend Jazzt*
+  2022. Wir freuen uns sehr über Ihr Interesse.
+  
+  Bitte füllen Sie diese Anmeldung vollständig aus. Im Laufe der Anmeldung
+  werden die folgenden Daten benötigt. Bitte halten Sie alle erforderlichen
+  Informationen bereit:
+  
+  - Organisatorischer Kontakt, Rechnungskontakt
+  - Informationen über das anzumeldende Ensemble (Name, Leitung, Größe, ...)
+  - Foto und Programmhefttext zum Ensemble
+  - Liste der Bandmitglieder (Name, Wohnort, Geburtsdatum, Schule/Beruf, ...)
+  - Programm
+  
+  Wenn Sie nicht alles auf einmal erledigen können, lassen sich
+  Zwischenergebnisse speichern ("Später Fortsetzen"). Bei weiteren Fragen setzen
+  Sie sich bitte mit dem
+  [Organisationsteam vom Landeswettbewerb](mailto:juja@lmr-hh.de) Jugend Jazzt
+  Hamburg in Verbindung:
+  
+  - E-Mail: juja@lmr-hh.de
+  - Telefon: 040 6452069
+  
+  Beachten Sie, dass Ihre Anmeldung erst als eingereicht gilt, wenn Sie die
+  vollständige Liste der Bandmitglieder eingereicht haben.
+  
+  Wir freuen uns auf Ihre Teilnahme!
+under: |
+  <small>
+  Alle Angaben, die in diesem Formular gemacht werden, sind zur Durchführung
+  des Wettbewerbs notwendig und werden ausschließlich zu dessen Durchführung
+  verwendet. Daten werden nicht an Dritte weitergegeben. Beachten Sie auch
+  unsere [Datenschutzhinweise](/packagestatic/docassemble.lmrhh/datenschutzhinweise.html).
+  </small>
+---
+id: juja-2022/ensemble
+field: Ensemble
+section: Ensemble
+question: Ensemble
+subquestion: |
+  Geben Sie die Daten des Ensembles an, das für den Wettbewerb angemeldet werden
+  soll.
+fields:
+  - Name des Jazzorchesters/der Bigband: ensemble.name
+  - Name der künstlerischen Leitung: ensemble.leader
+  - E-Mail der künstlerischen Leitung: ensemble.leader_mail
+    datatype: email
+    required: False
+  - Anzahl der Musiker\*innen: ensemble.size
+    datatype: integer
+  - note: |
+      Die folgenden Daten werden im Programmheft zu Ihrem Ensemble erscheinen.
+      Bitte stellen Sie sicher, dass alle abgebildeten Personen und die
+      Fotografen mit der Veröffentlichung im Programmheft sowie eventuell mit
+      Veröffentlichungen in weiteren Druckerzeugnissen oder im Web im
+      Zusammenhang mit dem Landeswettbewerb Jugend Jazzt einverstanden sind.
+  - Homepage: ensemble.homepage
+    required: False
+  - Facebook: ensemble.facebook
+    required: False
+  - Twitter: ensemble.twitter
+    required: False
+  - Instagram: ensemble.instagram
+    required: False
+  - Sonstige Präsenzen: ensemble.presences
+    datatype: text
+    input type: area
+  - Foto des Ensembles: ensemble.photo
+    datatype: file
+    accept: "'image/jpeg, image/png'"
+    help: Erlaubte Bildformate sind JPEG und PNG.
+  - note: |
+      Bitte Laden Sie das Bild in druckfähiger Auflösung (mind. 300 dpi) hoch.
+  - Copyright-Angabe zum Foto: ensemble.photo_copyright
+    hint: z.B. Name des Fotografen
+    required: False
+  - Informationen zur Bigband/zum Jazzorchester: ensemble.description
+    datatype: text
+    input type: area
+    maxlength: 1000
+    help: Maximal 1000 Zeichen
+---
+id: juja-2022/persoenliche-daten
+field: Kontaktdaten
+section: Administrativer Kontakt
+question: Administrativer Kontakt
+subquestion: |
+  Bitte geben Sie hier einen administrativen Kontakt für das Ensemble an. Diesen
+  Kontakt werden wir bezüglich organisatorischen Themen wie z.B. der Zuteilung
+  von Zeitslots kontaktieren.
+fields:
+  - Vorname: admin_contact.name.first
+  - Nachname: admin_contact.name.last
+  - Funktion: admin_contact.role
+  - E-Mail Adresse: admin_contact.email
+    datatype: email
+  - Telefonnummer: admin_contact.phone_number
+  - Straße und Hausnummer: admin_contact.address.address
+    hint: Beispiel-Straße 123
+  - Postleitzahl: admin_contact.address.zip
+    datatype: integer
+  - Ort: admin_contact.address.city
+    default: Hamburg
+  - ? Ich möchte zukünftig weitere Informationen des Landesmusikrates Hamburg
+      zum Thema Jugend Jazzt und weiteren Projekten erhalten.
+    : newsletter
+    datatype: yesnowide
+validation code: |
+  if admin_contact.phone_number and not phone_number_is_valid(person.phone_number, "DE"):
+    validation_error('Bitte geben Sie eine gültige Telefonnummer ein.', field='admin_contact.phone_number')
+---
+id: juja-2022/rechnung
+field: Rechnungsdaten
+section: Rechnungskontakt
+question: Rechnungskontakt
+subquestion: |
+  Für die Teilnahme am Wettbewerb wird ein Teilnahmebeitrag von 50,00 € pro
+  Ensemble erhoben. Nach Abschicken dieser Anmeldung erhalten Sie eine Rechnung.
+  
+  Bitte geben Sie hier die Rechnungsadresse sowie einen Rechnungskontakt an, den
+  wir bezüglich Themen zur Abrechnung kontaktieren werden.
+fields:
+  - Name des Rechnungsempfängers: billing_contact.name.text
+    default: ${ ensemble.name }
+  - E-Mail Adresse: billing_contact.email
+    datatype: email
+    default: ${ admin_contact.email }
+  - Telefonnummer: billing_contact.phone_number
+    default: ${ admin_contact.phone_number }
+  - Straße und Hausnummer: billing_contact.address.address
+    hint: Beispiel-Straße 123
+    default: ${ admin_contact.address.address }
+  - Postleitzahl: admin_contact.address.zip
+    datatype: integer
+    default: ${ admin_contact.address.zip }
+  - Ort: admin_contact.address.city
+    default: ${ admin_contact.address.city }
+validation code: |
+  if billing_contact.phone_number and not phone_number_is_valid(person.phone_number, "DE"):
+    validation_error('Bitte geben Sie eine gültige Telefonnummer ein.', field='billing_contact.phone_number')
+---
+id: juja-2022/werke
+field: Werke
+section: Anmeldedetails
+question: Werke
+subquestion: |
+  Welche Stücke/Arrangements spielen Sie?
+  ...
+---
+id: juja-2022/teilnahmebedingungen
+field: Teilnahmebedingungen
+section: Anmeldedetails
+question: Teilnahmebedingungen
+subquestion: |
+  Geben Sie hier für jeden der beiden Wettbewerbstage einen bevorzugten Zeitraum
+  für Ihren Auftritt an. Wir werden versuchen diese Angaben zu berücksichtigen.
+  Wir können allerdings keine Garantie geben, dass Ihr zugewiesener Zeitslot
+  auch tatsächlich in Ihrem bevorzugten Zeitraum liegt.
+  
+  Wenn Sie keinen Zeitraum angeben, gehen wir davon aus, dass alle Zeiten
+  gleichermaßen möglich sind.
+fields:
+  - Bevorzugter Zeitraum am Samstag, 12. November: preferred_times.saturday
+    required: False
+  - Bevorzugter Zeitraum am Sonntag, 13. November: preferred_times.sunday
+    required: False
+  - ? Mir ist bewusst, dass nicht alle Zeitwünsche berücksichtigt werden können
+      und dass meinem Ensemble ein verbindliches Zeitfenster zugewiesen wird.
+    : conditions.timing
+    datatype: yesnowide
+    validate: >
+        lambda x: x or validation_error('Sie müssen alle Teilnahmebedingungen akzeptieren.')
+  - note: |
+      Um am Wettbewerb teilnehmen zu können, müssen Sie den folgenden
+      Teilnahmebedingungen zustimmen.
+  - ? Ich habe die Teilnahmebedingungen gelesen und bin damit einverstanden.
+    : conditions.tos
+    datatype: yesnowide
+    validate: >
+      lambda x: x or validation_error('Sie müssen alle Teilnahmebedingungen akzeptieren.')
+  - note: |
+      Lesen Sie
+      [hier](https://jugendjazzt-hamburg.de/images/2022/Ausschreibung_Hamburger_Landeswettbewerb_Jugend_jazzt_2022.pdf)
+      die Teilnahmebedingungen.
+  - ? Ich erkläre mich damit einverstanden, die in diesem Formular angegebenen
+      Daten im Rahmen der Vorbereitung und Durchführung des Wettbewerbs durch
+      den Landesmusikrat Hamburg gemäß der Datenschutzhinweise verarbeitet
+      werden.
+    : conditions.privacy
+    datatype: yesnowide
+    validate: >
+      lambda x: x or validation_error('Sie müssen alle Teilnahmebedingungen akzeptieren.')
+  - note: |
+      Klicken Sie [hier](/packagestatic/docassemble.lmrhh/datenschutzhinweise.html),
+      um die Datenschutzhinweise zu lesen.
+css: |
+  <style>
+  .da-field-checkbox .da-has-error.invalid-feedback {
+    margin-top: -.5rem;
+    margin-bottom: .5rem;
+  }
+  </style>
+---
+# Berechnet, ob die Teilnahmebedingungen akzeptiert wurden. Dies kann benutzt
+# werden, um ggf. die notwendige Frage nach den Bedingungen zu stellen, falls
+# bestimmte Bedingungen noch nicht akzeptiert sind.
+code: |
+  conditions.accepted = all([
+    conditions.timing,
+    conditions.tos,
+    conditions.privacy,
+  ])
+---
+id: juja-2022/kontrolle
+continue button field: Kontrolle
+section: Ihre Anmeldung
+question: Ihre Anmeldung zur Fachtagung Musik und Demenz
+review:
+  - note: |
+      % if testmodus:
+      <div class="alert alert-warning" role="alert">
+      Die Anmeldung wird im Testmodus ausgefüllt. Die Ergebnisse werden nicht
+      automatisch übermittelt. Wenn du auf "Anmeldung abschicken" klickst,
+      bekommst du eine Zusammenfassung der auszuführenden Aktionen.
+      </div>
+      % endif
+      
+      Bevor Sie Ihre Anmeldung abschicken, haben Sie noch einmal die Möglichkeit,
+      Ihre Angaben zu überprüfen. Nachdem Sie Ihre Anmeldung abgeschickt haben,
+      bekommen Sie eine Bestätigung und die Rechnung per E-Mail.
+  - Angaben ändern: Ensemble
+    button: |
+      ## Angaben zum Ensemble
+      
+      |Feld |Ihre Angabe |
+      |-----|------------|
+      |Name | ${ensemble.name } |
+      |Künstlerische Leitung | ${ ensemble.leader } ${ '<' + ensemble.leader_mail + '>' if ensemble.leader_mail else '' } |
+      |Größe | ${ ensemble.size } |
+      |Homepage | ${ ensemble.homepage } |
+      |Facebook | ${ ensemble.facebook } |
+      |Twitter | ${ ensemble.twitter } |
+      |Instagram | ${ ensemble.instagram } |
+      |Sonstige Präsenzen | ${ ensemble.presences } |
+      
+      ${ ensemble.photo }
+      
+      ${ ensemble.description | quote }
+  - Angaben ändern: Kontaktdaten
+    button: |
+      ## Administrativer Kontakt
+
+      |Feld          |Ihre Angabe               |
+      |--------------|--------------------------|
+      |Name          | ${ admin_contact.name }         |
+      |Funktion  | ${ admin_contact.role } |
+      |E-Mail        | ${ admin_contact.email }        |
+      |Telefonnummer | ${ admin_contact.phone_number } |
+      |Adresse       | ${ adresse(admin_contact) }     |
+      |Newsletter-Anmeldung    | ${ newsletter } |
+
+  - Angaben ändern: Rechnungsdaten
+    button: |
+      ## Rechnungskontakt
+      
+      |Feld          |Ihre Angabe               |
+      |--------------|--------------------------|
+      |Name          | ${ billing_contact.name }         |
+      |E-Mail        | ${ billing_contact.email }        |
+      |Telefonnummer | ${ billing_contact.phone_number } |
+      |Adresse       | ${ adresse(admin_contact) }     |
+
+  - Erneut ansehen: Teilnahmebedingungen
+    button: |
+      ## Teilnahmebedingungen
+
+      Sie haben den Teilnahmebedingungen **zugestimmt**.
+      <p></p>
+  - note: |
+      ## Anmelden
+
+      Wenn Sie ihre Daten kontrolliert haben, klicken Sie auf "Jetzt verbindlich anmelden",
+      um Ihre Anmeldung abzuschicken.
+      
+      Sie erhalten sowohl Ihre Anmeldung als auch eine
+      Rechnung für den Teilnahmebeitrag per E-Mail.
+continue button label: Jetzt verbindlich anmelden
+---
+id: juja-2022/warten
+event: Warten
+section: Ihre Anmeldung
+prevent going back: True
+question: Anmeldung abschicken...
+subquestion:
+  Ihre Anmeldung wird gerade abgeschickt. Dies kann einen Moment dauern. Bitte lassen
+  Sie dieses Fenster geöffnet, bis die Anmeldung erfolgreich abgeschickt wurde.
+---
+id: juja-2022/bestaetigung
+event: Fertig
+section: Ihre Anmeldung
+prevent going back: True
+question: Ihre Anmeldung
+subquestion: |
+  Ihre Anmeldung wurde erfolgreich abgeschickt. Sie erhalten eine Kopie per E-Mail.
+
+  Sie können hier direkt Ihre Anmeldung und Ihre Rechnung herunterladen. Sie bekommen
+  beide Dokumente auch per Mail zugeschickt:
+
+  - [Anmeldung herunterladen](${ anmeldung.pdf.url_for() })
+  - [Rechnung herunterladen](${ rechnung.pdf.url_for() })
+
+  Wir freuen uns über Ihre Teilnahme.
+
+  Klicken Sie auf "Fertig", um die Anmeldung zu beenden.
+buttons:
+  - Fertig: leave
+---
+id: juja-2022/testergebnisse
+event: Testergebnisse
+section: Ihre Anmeldung
+prevent going back: True
+question: Testmodus
+subquestion: ${ testergebnis }
+buttons:
+  - Fertig: exit
+---
