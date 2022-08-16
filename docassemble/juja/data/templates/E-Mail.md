@@ -12,7 +12,7 @@ Ihre Anmeldung nicht akzeptieren.
 ## Angaben zum Ensemble
 | Feld                  | Ihre Angabe                                                                                |
 |-----------------------|--------------------------------------------------------------------------------------------|
-| Name                  | ${ensemble.name }                                                                          |
+| Name                  | ${ ensemble.name }                                                                         |
 | Künstlerische Leitung | ${ ensemble.leader } ${ '<' + ensemble.leader_mail + '>' if ensemble.leader_mail else '' } |
 | Größe                 | ${ ensemble.size }                                                                         |
 | Homepage              | ${ ensemble.homepage }                                                                     |
@@ -32,7 +32,6 @@ ${ ensemble.description | quote }
 | E-Mail               | ${ admin_contact.email }        |
 | Telefonnummer        | ${ admin_contact.phone_number } |
 | Adresse              | ${ adresse(admin_contact) }     |
-| Newsletter-Anmeldung | ${ newsletter }                 |
 
 ## Rechnungskontakt
 

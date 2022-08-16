@@ -2,7 +2,11 @@
 default screen parts:
   under: |
     ---
-    <a class="btn btn-secondary" href="${ url_action('Pause') }">Später fortsetzen</a>
+    Um Ihre bisherigen Angaben zu sichern und die Anmeldung zu einem späteren
+    Zeitpunkt fortzusetzen, klicken Sie auf
+    <a class="btn btn-secondary btn-sm" href="${ url_action('Pause') }">Später fortsetzen</a>.
+    
+    Die Eingaben der aktuellen Seite gehen dabei verloren.
 ---
 event: Pause
 question: Später fortsetzen
@@ -17,7 +21,7 @@ subquestion: |
   Öffnen Sie diesen Link, um die Anmeldung zu einem späteren Zeitpunkt
   fortzusetzen.
 buttons:
-  - Weiter: continue
+  - Jetzt fortsetzen: continue
 ---
 sections:
   - Ensemble
@@ -25,6 +29,7 @@ sections:
   - Rechnungskontakt
   - Anmeldedetails
   - Ihre Anmeldung
+  - Musiker\*innen
 ---
 # Die Reihenfolge, in der Fragen gestellt werden. Dies ist eine erweiterte
 # Funktion, die nicht leichtfertig verändert werden sollte.
@@ -43,8 +48,8 @@ code: |
   Abschicken
   if testmodus:
     Testergebnisse
-  else:
-    Fertig
+  Mitspieler
+  Fertig
 ---
 event: Anmeldefrist
 section: Persönliche Daten
@@ -188,7 +193,7 @@ field: Rechnungsdaten
 section: Rechnungskontakt
 question: Rechnungskontakt
 subquestion: |
-  Für die Teilnahme am Wettbewerb wird ein Teilnahmebeitrag von 50,00 € pro
+  Für die Teilnahme am Wettbewerb wird ein Teilnahmebeitrag von **50,00 €** pro
   Ensemble erhoben. Nach Abschicken dieser Anmeldung erhalten Sie eine Rechnung.
   
   Bitte geben Sie hier die Rechnungsadresse sowie einen Rechnungskontakt an, den
@@ -238,24 +243,24 @@ fields:
     required: False
   - Bevorzugter Zeitraum am Sonntag, 13. November: preferred_times.sunday
     required: False
+  - note: |
+      Um am Wettbewerb teilnehmen zu können, müssen Sie den folgenden
+      Teilnahmebedingungen zustimmen.
+      
+      - [Teilnahmebedingungen](https://jugendjazzt-hamburg.de/images/2022/Ausschreibung_Hamburger_Landeswettbewerb_Jugend_jazzt_2022.pdf) 
+      - [Datenschutzhinweise](/packagestatic/docassemble.lmrhh/datenschutzhinweise.html)
+
   - ? Mir ist bewusst, dass nicht alle Zeitwünsche berücksichtigt werden können
       und dass meinem Ensemble ein verbindliches Zeitfenster zugewiesen wird.
     : conditions.timing
     datatype: yesnowide
     validate: >
         lambda x: x or validation_error('Sie müssen alle Teilnahmebedingungen akzeptieren.')
-  - note: |
-      Um am Wettbewerb teilnehmen zu können, müssen Sie den folgenden
-      Teilnahmebedingungen zustimmen.
   - ? Ich habe die Teilnahmebedingungen gelesen und bin damit einverstanden.
     : conditions.tos
     datatype: yesnowide
     validate: >
       lambda x: x or validation_error('Sie müssen alle Teilnahmebedingungen akzeptieren.')
-  - note: |
-      Lesen Sie
-      [hier](https://jugendjazzt-hamburg.de/images/2022/Ausschreibung_Hamburger_Landeswettbewerb_Jugend_jazzt_2022.pdf)
-      die Teilnahmebedingungen.
   - ? Ich erkläre mich damit einverstanden, die in diesem Formular angegebenen
       Daten im Rahmen der Vorbereitung und Durchführung des Wettbewerbs durch
       den Landesmusikrat Hamburg gemäß der Datenschutzhinweise verarbeitet
@@ -264,9 +269,6 @@ fields:
     datatype: yesnowide
     validate: >
       lambda x: x or validation_error('Sie müssen alle Teilnahmebedingungen akzeptieren.')
-  - note: |
-      Klicken Sie [hier](/packagestatic/docassemble.lmrhh/datenschutzhinweise.html),
-      um die Datenschutzhinweise zu lesen.
 css: |
   <style>
   .da-field-checkbox .da-has-error.invalid-feedback {
@@ -306,49 +308,53 @@ review:
     button: |
       ## Angaben zum Ensemble
       
-      | Feld                  | Ihre Angabe                                                                                |
-      |-----------------------|--------------------------------------------------------------------------------------------|
-      | Name                  | ${ensemble.name }                                                                          |
-      | Künstlerische Leitung | ${ ensemble.leader } ${ '<' + ensemble.leader_mail + '>' if ensemble.leader_mail else '' } |
-      | Größe                 | ${ ensemble.size }                                                                         |
-      | Homepage              | ${ ensemble.homepage }                                                                     |
-      | Facebook              | ${ ensemble.facebook }                                                                     |
-      | Twitter               | ${ ensemble.twitter }                                                                      |
-      | Instagram             | ${ ensemble.instagram }                                                                    |
-      | Sonstige Präsenzen    | ${ ensemble.presences }                                                                    |
+      |Feld                  |Ihre Angabe                                                                                |
+      |----------------------|-------------------------------------------------------------------------------------------|
+      |Name                  |${ ensemble.name }                                                                         |
+      |Künstlerische Leitung |${ ensemble.leader } ${ '<' + ensemble.leader_mail + '>' if ensemble.leader_mail else '' } |
+      |Größe                 |${ ensemble.size }                                                                         |
+      |Homepage              |${ ensemble.homepage }                                                                     |
+      |Facebook              |${ ensemble.facebook }                                                                     |
+      |Twitter               |${ ensemble.twitter }                                                                      |
+      |Instagram             |${ ensemble.instagram }                                                                    |
+      |Sonstige Präsenzen    |${ ensemble.presences }                                                                    |
       
       ${ ensemble.photo }
+      
+      <small>(c) ${ ensemble.photo_copyright }</small>
       
       ${ ensemble.description | quote }
   - Angaben ändern: Kontaktdaten
     button: |
       ## Administrativer Kontakt
 
-      | Feld                 | Ihre Angabe                     |
-      |----------------------|---------------------------------|
-      | Name                 | ${ admin_contact.name }         |
-      | Funktion             | ${ admin_contact.role }         |
-      | E-Mail               | ${ admin_contact.email }        |
-      | Telefonnummer        | ${ admin_contact.phone_number } |
-      | Adresse              | ${ adresse(admin_contact) }     |
-      | Newsletter-Anmeldung | ${ newsletter }                 |
+      |Feld                 |Ihre Angabe                         |
+      |---------------------|------------------------------------|
+      |Name                 |${ admin_contact.name }             |
+      |Funktion             |${ admin_contact.role }             |
+      |E-Mail               |${ admin_contact.email }            |
+      |Telefonnummer        |${ admin_contact.phone_number }     |
+      |Adresse              |${ adresse(admin_contact) }         |
+      |Newsletter-Anmeldung |${ 'Ja' if newsletter else 'Nein' } |
 
   - Angaben ändern: Rechnungsdaten
     button: |
       ## Rechnungskontakt
       
-      | Feld          | Ihre Angabe                       |
-      |---------------|-----------------------------------|
-      | Name          | ${ billing_contact.name }         |
-      | E-Mail        | ${ billing_contact.email }        |
-      | Telefonnummer | ${ billing_contact.phone_number } |
-      | Adresse       | ${ adresse(admin_contact) }       |
+      |Feld          |Ihre Angabe                       |
+      |--------------|----------------------------------|
+      |Name          |${ billing_contact.name }         |
+      |E-Mail        |${ billing_contact.email }        |
+      |Telefonnummer |${ billing_contact.phone_number } |
+      |Adresse       |${ adresse(admin_contact) }       |
 
   - Erneut ansehen: Teilnahmebedingungen
     button: |
       ## Teilnahmebedingungen
 
       Sie haben den Teilnahmebedingungen **zugestimmt**.
+      
+      TODO: Bevorzugte Zeiten
       <p></p>
   - note: |
       ## Anmelden
@@ -375,13 +381,10 @@ section: Ihre Anmeldung
 prevent going back: True
 question: Ihre Anmeldung
 subquestion: |
-  Ihre Anmeldung wurde erfolgreich abgeschickt. Sie erhalten eine Kopie per E-Mail.
+  Ihre Anmeldung wurde erfolgreich abgeschickt. Ihre Angaben sowie die Rechnung
+  haben wir Ihnen auch per Mail zugeschickt.
 
-  Sie können hier direkt Ihre Anmeldung und Ihre Rechnung herunterladen. Sie bekommen
-  beide Dokumente auch per Mail zugeschickt:
-
-  - [Anmeldung herunterladen](${ anmeldung.pdf.url_for() })
-  - [Rechnung herunterladen](${ rechnung.pdf.url_for() })
+  - [Rechnung direkt herunterladen](${ rechnung.pdf.url_for() })
 
   Wir freuen uns über Ihre Teilnahme.
 
@@ -389,12 +392,16 @@ subquestion: |
 buttons:
   - Fertig: leave
 ---
+template: testergebnis
+usedefs: [test_defs]
+content file: Testmodus.md
+---
 id: juja-2022/testergebnisse
-event: Testergebnisse
+field: Testergebnisse
 section: Ihre Anmeldung
 prevent going back: True
 question: Testmodus
 subquestion: ${ testergebnis }
 buttons:
-  - Fertig: exit
+  - Fertig: continue
 ---

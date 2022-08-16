@@ -12,20 +12,31 @@ code: |
 # case-insensitive.
 code: |
   member_data = {
-    "Organisation": person.organisation,
-    "Vorname": person.name.first,
-    "Nachname": person.name.last,
-    "E-Mail": person.email,
-    "Telefonnummer": person.phone_number,
-    "Adresse": adresse(person),
-    "Newsletter": bedingungen.newsletter,
-    "Anmeldedatum": current_datetime(timezone="Europe/Berlin").format_datetime('d.M.YYYY HH:mm'),
+    "Ensemble": ensemble.name,
+    "Künstlerische Leitung": ensemble.leader,
+    "E-Mail Künstlerische Leitung": ensemble.leader_mail,
+    "Grösse": ensemble.size,
+    "Homepage": ensemble.homepage,
+    "Facebook": ensemble.facebook,
+    "Twitter": ensemble.twitter,
+    "Instagram": ensemble.instagram,
+    "Sonstige Präsenzen": ensemble.presences,
+    "Foto Copyright": ensemble.photo_copyright,
+    "Orga Name": admin_contact.name.full(),
+    "Orga Funktion": admin_contact.role,
+    "Orga E-Mail": admin_contact.email,
+    "Orga Telefon": admin_contact.phone_number,
+    "Orga Adresse": adresse(admin_contact),
+    "Newsletter": newsletter,
+    "Rechnungsempfänger": billing_contact.name.full(),
+    "Rechnung E-Mail": billing_contact.email,
+    "Rechnung Telefon": billing_contact.phone_number,
+    "Zeitraum Samstag": preferred_times.saturday,
+    "Zeitraum Sonntag": preferred_times.sunday,
+  
     "Rechnungsnummer": rechnungsnummer,
-    "Betrag": betrag,
-    "Ermässigungsnachweis": "Nicht erforderlich"
+    "Anmeldedatum": current_datetime(timezone="Europe/Berlin").format_datetime('d.M.YYYY HH:mm'),
   }
-  if discount:
-    member_data["Ermässigungsnachweis"] = "Ja" if discount_proof else "Nein"
 ---
 # A task that adds a row to the Anmeldungen.
 need: [rechnungsnummer, msgraph]
@@ -56,18 +67,9 @@ code: |
 ---
 
 ---
-# A task that assembles the registration PDF.
-code: anmeldung_task = background_action('assemble_anmeldung', 'refresh')
----
-# Assembles the registration pdf.
-event: assemble_anmeldung
-code: |
-  background_response_action(
-    'set_variable',
-    anmeldung=anmeldeformular
-  )
----
-
+sets: rechnung
+need: [rechnungsnummer, rechnung_task]
+code: Warten
 ---
 code: rechnung_task = background_action('assemble_rechnung', 'refresh')
 need: [rechnungsnummer, rechnungsdatum]
@@ -80,98 +82,70 @@ code: |
     rechnung=rechnungsformular
   )
 ---
-# A task that archives the registration PDF to a folder.
-need: [anmeldung, msgraph]
+
+---
+need: [rechnungsnummer, rechnung, msgraph]
 code: |
   if testmodus:
-    archive_registration_task = None
+    archive_task = None
   else:
-    archive_registration_task = background_action(
-      'archive_registration',
-      'refresh'
-    )
+    archive_task = background_action('archive', 'refresh')
 ---
-# Archives the registration PDF to a folder. This action does not receive
-# arguments.
-event: archive_registration
-need: [anmeldung, msgraph]
+event: archive
+need: [rechnungsnummer, rechnung, msgraph]
 code: |
+  import io
+  
   background = interface() in {"worker", "cron"}
   drive = daten["Anmeldungen"]["Bibliothek"]
   folder = daten["Anmeldungen"]["Ordner"]
-  result = msgraph.upload_file(
-    drive,
-    folder,
-    anmeldung.pdf.filename,
-    open(anmeldung.pdf.path(), 'rb')
-  ).json()
+  
+  archive_folder = msgraph.post(
+    f"drives/{drive}/items/{folder}/children",
+    json={
+      "name": ensemble.name,
+      "folder": {},
+      "@microsoft.graph.conflictBehavior": "rename"
+    }
+  ).json()["id"]
+  
+  with open(rechnung.pdf.path(), 'rb') as f:
+    invoice_response = msgraph.upload_file(
+      drive,
+      archive_folder,
+      rechnung.pdf.filename,
+      f
+    )
+  with open(ensemble.photo.path(), 'rb') as f:
+    photo_response = msgraph.upload_file(
+      drive,
+      archive_folder,
+      "Foto." + ensemble.photo.extension,
+      f
+    )
+  with io.StringIO(ensemble.description) as f:
+    desc_response = msgraph.upload_file(
+      drive,
+      archive_folder,
+      "Beschreibung.txt",
+      f
+    )
+  
+  assert invoice_response.status_code == 201
+  assert photo_response.status_code == 201
+  assert desc_response.status_code == 201
   if background:
-    background_response(result)
+      background_response_action(
+        'set_variable',
+        archive_folder=archive_folder
+      )
   else:
     json_response(result)
 ---
 
----
-# A task that archives the invoice PDF to a folder.
-need: [rechnungsnummer, rechnung, msgraph]
-code: |
-  if testmodus:
-    archive_invoice_task = None
-  else:
-    archive_invoice_task = background_action('archive_invoice', 'refresh')
----
-# Archives the invoice PDF to a folder. This action does not receive
-# arguments.
-event: archive_invoice
-need: [rechnungsnummer, rechnung, msgraph]
-code: |
-  background = interface() in {"worker", "cron"}
-  drive = daten["Anmeldungen"]["Bibliothek"]
-  folder = daten["Anmeldungen"]["Ordner"]
-  result = msgraph.upload_file(
-    drive,
-    folder,
-    rechnung.pdf.filename,
-    open(rechnung.pdf.path(), 'rb')
-  ).json()
-  if background:
-    background_response(result)
-  else:
-    json_response(result)
----
-
----
-# A task that archives the discount proof to a folder.
-need: [discount_proof, msgraph]
-code: |
-  if testmodus:
-    archive_discount_proof_task = None
-  else:
-    archive_discount_proof_task = background_action(
-      'archive_discount_proof',
-      'refresh'
-    )
----
-# Archives the discount proof file. This action does not receive arguments.
-event: archive_discount_proof
-need: [discount_proof, msgraph]
-code: |
-  background = interface() in {"worker", "cron"}
-  drive = daten["Anmeldungen"]["Bibliothek"]
-  folder = daten["Anmeldungen"]["Ordner"]
-  result = msgraph.upload_file(
-    drive,
-    folder,
-    f"Ermäßigungsnachweis {str(person.name)}.{discount_proof[0].extension}",
-    open(discount_proof.path(), 'rb')
-  ).json()
-  if background:
-    background_response(result)
-  else:
-    json_response(result)
 ---
 # Sends an email to the registered email address
-need: [rechnungsnummer, anmeldung, rechnung, mailgun]
+need: [rechnungsnummer, rechnung, mailgun]
 code: |
   if testmodus:
     member_email_task = None
@@ -180,13 +154,13 @@ code: |
 ---
 # Sends an email to the registered email address.
 event: send_member_email
-need: [rechnungsnummer, anmeldung, rechnung, mailgun]
+need: [rechnungsnummer, rechnung, mailgun]
 code: |
   background = interface() in {"worker", "cron"}
   result = mailgun.send_email(
     to=[person],
     template=person_email,
-    attachments=[anmeldung.pdf, rechnung.pdf]
+    attachments=[rechnung.pdf]
   )
   if background:
     background_response(result)

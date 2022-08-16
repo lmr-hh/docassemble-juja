@@ -1,10 +1,3 @@
-attachment:
-  name: Anmeldung ${ ensemble }
-  filename: Anmeldung ${ ensemble }
-  docx template file: Anmeldung.docx
-  variable name: anmeldeformular
-  valid formats: [pdf]
----
 code: |
   key = "juja_rechnungsnummer"
   if testmodus:
@@ -46,18 +39,4 @@ subject: ${ person.name } hat sich zum MuD-Tagung angemeldet
 # Ordner).
 content file: Benachrichtigung.md
 ---
-template: testergebnis
-usedefs: [test_defs]
-content file: Testmodus.md
----
-# Wenn nach der Anmeldung gefragt wird, wird diese im Hintergrund erstellt.
-# Währenddessen wird ein Wartebildschirm gezeigt, Dies ist dazu da, dass der
-# "Absenden" Schritt einfach übersprungen werden kann.
-sets: anmeldung
-need: anmeldung_task
-code: Warten
----
-sets: rechnung
-need: [rechnungsnummer, rechnung_task]
-code: Warten
----
+
