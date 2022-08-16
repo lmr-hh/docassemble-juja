@@ -25,7 +25,7 @@ attachment:
 # Wert von template sollte nicht verändert werden.
 template: person_email
 # Der E-Mail-Betreff
-subject: Ihre Anmeldung zur Fachtagung Musik und Demenz
+subject: Ihre Anmeldung zum Landeswettbewerb Jugend Jazzt 2022
 # Diese Datei enthält den Mailinhalt (die Datei befindet sich im `templates`
 # Ordner).
 content file: E-Mail.md

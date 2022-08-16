@@ -116,11 +116,12 @@ code: |
       rechnung.pdf.filename,
       f
     )
-  with open(ensemble.photo.path(), 'rb') as f:
+  photo = ensemble.photo[0]
+  with open(photo.path(), 'rb') as f:
     photo_response = msgraph.upload_file(
       drive,
       archive_folder,
-      "Foto." + ensemble.photo.extension,
+      "Foto." + photo.extension,
       f
     )
   with io.StringIO(ensemble.description) as f:
@@ -134,13 +135,15 @@ code: |
   assert invoice_response.status_code == 201
   assert photo_response.status_code == 201
   assert desc_response.status_code == 201
+  
+  del drive, folder, photo, f, io, invoice_response, photo_response, desc_response
   if background:
       background_response_action(
         'set_variable',
         archive_folder=archive_folder
       )
   else:
-    json_response(result)
+    json_response({})
 ---
 
 ---

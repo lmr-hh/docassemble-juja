@@ -20,7 +20,10 @@ Es wurde eine Rechnung als PDF generiert.
 </p>
 
 ### Begrüßungs-E-Mail
-Eine E-Mail würde an `${ admin_contact.email }` und `${ billing_contact.email }`
+Eine E-Mail würde an `${ admin_contact.email }`
+% if billing_contact.email != admin_contact.email:
+und `${ billing_contact.email }`
+% endif
 geschickt werden. Der Text der E-Mail kann unten angesehen werden. Das Design
 der E-Mail sieht allerdings anders aus.
 

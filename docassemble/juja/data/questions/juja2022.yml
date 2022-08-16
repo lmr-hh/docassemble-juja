@@ -12,6 +12,7 @@ objects:
   billing_contact: Person
   conditions: DAObject
   preferred_times: DAObject
+  songs: DAList
   redis: DARedis
 ---
 modules:
