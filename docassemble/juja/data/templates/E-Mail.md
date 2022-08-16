@@ -1,4 +1,4 @@
-Liebe\*r Herr\*Frau ${ person.name.last },
+Liebe Jazzer\*innen,
 
 vielen Dank für Ihre Anmeldung zum Landeswettbewerb Jugend Jazzt. In dieser Mail
 erhalten Sie zur Bestätigung die von Ihnen angegebenen Daten sowie die Rechnung
