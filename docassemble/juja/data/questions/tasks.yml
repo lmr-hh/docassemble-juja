@@ -186,6 +186,12 @@ code: |
         1,
         f'=AVERAGE(DATEDIF(B2:B{len(member_data)+1}, "2022-09-01", "y"))'
       )
+      worksheet.set_header(
+        f"&CMitglieder des Ensembles {ensemble.name}"
+      )
+      worksheet.set_footer(
+        "Seite &P von &N"
+      )
     f.seek(0)
     response = msgraph.upload_file(
       daten["Anmeldungen"]["Bibliothek"],
