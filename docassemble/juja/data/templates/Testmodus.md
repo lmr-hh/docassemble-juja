@@ -9,14 +9,9 @@
 
 ### Anmeldungsformular und Rechnung
 
-Es wurde ein Anmeldungsformular als PDF generiert.
+Es wurde eine Rechnung als PDF generiert.
 
 <p>
-  <a href="${ anmeldung.pdf.url_for() }"
-    target="_blank"
-    class="btn btn-primary btn-sm">
-      Anmeldeformular ansehen
-  </a>
   <a href="${ rechnung.pdf.url_for() }"
     target="_blank"
     class="btn btn-primary btn-sm">
@@ -25,13 +20,12 @@ Es wurde ein Anmeldungsformular als PDF generiert.
 </p>
 
 ### Begrüßungs-E-Mail
-Eine E-Mail würde an `${ person.email }` geschickt werden.
-Der Text der E-Mail kann unten angesehen werden. Das Design der
-E-Mail sieht allerdings anders aus.
+Eine E-Mail würde an `${ admin_contact.email }` und `${ billing_contact.email }`
+geschickt werden. Der Text der E-Mail kann unten angesehen werden. Das Design
+der E-Mail sieht allerdings anders aus.
 
 An die E-Mail sind die folgenden Dokumente angehängt:
 
-- [${ anmeldeformular.pdf.filename }](${ anmeldung.pdf.url_for() })
 - [${ rechnung.pdf.filename }](${ rechnung.pdf.url_for() })
 
 <p>
@@ -61,7 +55,7 @@ Die Benachrichtigung enthält nur wenig Text. Folgende Empfänger werden benachr
 % endfor
 
 Wenn du unten auf "E-Mail trotzdem senden" klickst, wird die E-Mail im Testmodus
-nur an die von dir angegebene Adresse `${ person.email }` gesendet.
+nur an die von dir angegebene Adresse `${ admin_contact.email }` gesendet.
 
 <p>
   <%self:collapse_button id="orga-email-collapse">
@@ -79,29 +73,14 @@ nur an die von dir angegebene Adresse `${ person.email }` gesendet.
 % endif
 
 ### Archivieren der Anmeldung und Rechnung
-Das Anmeldeformular und die Rechnung werden automatisch in dem Ordner
+Alle Dateien zur Anmeldung und die Rechnung werden automatisch in dem Ordner
 **${ ordner['name'] }** archiviert.
-% if not discount_proof:
-In der Anmeldung wurde kein Ermäßigungsnachweis hochgeladen.
-% else:
-Auch der Ermäßigungsnachweis wird in diesem Ordner archiviert.
-% endif
 
 <p>
-  <%self:action_button action="archive_registration"
-                       message="Die Anmeldung wurde zum Ordner hinzugefügt.">
-    Anmeldung archivieren
+  <%self:action_button action="archive"
+                       message="Die Dateien wurden archiviert.">
+    Dateien archivieren
   </%self:action_button>
-  <%self:action_button action="archive_invoice"
-                       message="Die Rechnung wurde zum Ordner hinzugefügt.">
-    Rechnung archivieren
-  </%self:action_button>
-% if discount_proof:
-  <%self:action_button action="archive_discount_proof"
-                       message="Der Nachweis wurde zum Ordner hinzugefügt.">
-    Ermäßigungsnachweis archivieren
-  </%self:action_button>
-% endif
   <a class="btn btn-secondary btn-sm"
      target="_blank"
      href="${ ordner['webUrl'] }">Ordner öffnen</a>

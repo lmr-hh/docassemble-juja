@@ -308,16 +308,16 @@ review:
     button: |
       ## Angaben zum Ensemble
       
-      | Feld                  | Ihre Angabe                                                                                                |
-      |-----------------------|------------------------------------------------------------------------------------------------------------|
-      | Name                  | ${ verbatim(ensemble.name) }                                                                               |
-      | Künstlerische Leitung | ${ verbatim(ensemble.leader) } ${ '&lt;' + ensemble.leader_mail + '&gt;' if ensemble.leader_mail else '' } |
-      | Größe                 | ${ ensemble.size }                                                                                         |
-      | Homepage              | ${ verbatim(ensemble.homepage) }                                                                           |
-      | Facebook              | ${ verbatim(ensemble.facebook) }                                                                           |
-      | Twitter               | ${ verbatim(ensemble.twitter) }                                                                            |
-      | Instagram             | ${ verbatim(ensemble.instagram) }                                                                          |
-      | Sonstige Präsenzen    | ${ verbatim(ensemble.presences) }                                                                          |
+      |Feld                  |Ihre Angabe                                                                                                |
+      |----------------------|-----------------------------------------------------------------------------------------------------------|
+      |Name                  |${ verbatim(ensemble.name) }                                                                               |
+      |Künstlerische Leitung |${ verbatim(ensemble.leader) } ${ '&lt;' + ensemble.leader_mail + '&gt;' if ensemble.leader_mail else '' } |
+      |Größe                 |${ ensemble.size }                                                                                         |
+      |Homepage              |${ verbatim(ensemble.homepage) }                                                                           |
+      |Facebook              |${ verbatim(ensemble.facebook) }                                                                           |
+      |Twitter               |${ verbatim(ensemble.twitter) }                                                                            |
+      |Instagram             |${ verbatim(ensemble.instagram) }                                                                          |
+      |Sonstige Präsenzen    |${ verbatim(ensemble.presences) }                                                                          |
       
       [CENTER] ${ ensemble.photo }
       
@@ -333,25 +333,25 @@ review:
     button: |
       ## Administrativer Kontakt
 
-      | Feld                  | Ihre Angabe                               |
-      |-----------------------|-------------------------------------------|
-      | Name                  | ${ verbatim(admin_contact.name) }         |
-      | Funktion              | ${ verbatim(admin_contact.role) }         |
-      | E-Mail                | ${ verbatim(admin_contact.email) }        |
-      | Telefonnummer         | ${ verbatim(admin_contact.phone_number) } |
-      | Adresse               | ${ adresse(admin_contact) }               |
-      | Newsletter-Anmeldung  | ${ 'Ja' if newsletter else 'Nein' }       |
+      |Feld                  |Ihre Angabe                               |
+      |----------------------|------------------------------------------|
+      |Name                  |${ verbatim(admin_contact.name) }         |
+      |Funktion              |${ verbatim(admin_contact.role) }         |
+      |E-Mail                |${ verbatim(admin_contact.email) }        |
+      |Telefonnummer         |${ verbatim(admin_contact.phone_number) } |
+      |Adresse               |${ adresse(admin_contact) }               |
+      |Newsletter-Anmeldung  |${ 'Ja' if newsletter else 'Nein' }       |
 
   - Angaben ändern: Rechnungsdaten
     button: |
       ## Rechnungskontakt
       
-      | Feld          | Ihre Angabe                                 |
-      |---------------|---------------------------------------------|
-      | Name          | ${ verbatim(billing_contact.name) }         |
-      | E-Mail        | ${ verbatim(billing_contact.email) }        |
-      | Telefonnummer | ${ verbatim(billing_contact.phone_number) } |
-      | Adresse       | ${ adresse(admin_contact) }                 |
+      |Feld          |Ihre Angabe                                 |
+      |--------------|--------------------------------------------|
+      |Name          |${ verbatim(billing_contact.name) }         |
+      |E-Mail        |${ verbatim(billing_contact.email) }        |
+      |Telefonnummer |${ verbatim(billing_contact.phone_number) } |
+      |Adresse       |${ adresse(admin_contact) }                 |
 
   - Erneut ansehen: Teilnahmebedingungen
     button: |

@@ -157,8 +157,11 @@ event: send_member_email
 need: [rechnungsnummer, rechnung, mailgun]
 code: |
   background = interface() in {"worker", "cron"}
+  recipients = [admin_contact]
+  if billing_contact.email != admin_contact.email:
+    recipients.append(billing_contact)
   result = mailgun.send_email(
-    to=[person],
+    to=recipients,
     template=person_email,
     attachments=[rechnung.pdf]
   )
