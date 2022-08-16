@@ -1,12 +1,14 @@
 ---
 default screen parts:
   under: |
+    % if not defined('Kontrolle'):
     ---
     Um Ihre bisherigen Angaben zu sichern und die Anmeldung zu einem späteren
     Zeitpunkt fortzusetzen, klicken Sie auf
     <a class="btn btn-secondary btn-sm" href="${ url_action('Pause') }">Später fortsetzen</a>.
     
     Die Eingaben der aktuellen Seite gehen dabei verloren.
+    % endif
 ---
 event: Pause
 question: Später fortsetzen
@@ -20,6 +22,7 @@ subquestion: |
   
   Öffnen Sie diesen Link, um die Anmeldung zu einem späteren Zeitpunkt
   fortzusetzen.
+under: ""
 buttons:
   - Jetzt fortsetzen: continue
 ---
@@ -60,6 +63,7 @@ subquestion: |
 
   Wenn Sie sich bereits angemeldet haben, erhalten Sie per E-Mail alle weiteren
   Informationen.
+under: ""
 buttons:
   - Ende: exit
 ---

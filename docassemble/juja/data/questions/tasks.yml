@@ -191,7 +191,7 @@ code: |
   if not recipients:
     result = True
   else:
-    to = [person] if testmodus else recipients
+    to = [admin_contact] if testmodus else recipients
     result = mailgun.send_email(
       to=to,
       template=orga_email
