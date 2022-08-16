@@ -1,7 +1,7 @@
 table: songs.table
 rows: songs
 columns:
-  - Titel: row_item.title
+  - Titel: row_item.name.full()
   - Komponist: row_item.composer
   - Arrangeur: row_item.arranger
   - Verlag: row_item.publisher

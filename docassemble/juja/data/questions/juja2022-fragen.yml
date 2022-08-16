@@ -44,7 +44,7 @@ code: |
   Ensemble
   Kontaktdaten
   Rechnungsdaten
-  songs
+  songs.gather()
   
   Teilnahmebedingungen
   Kontrolle
@@ -226,11 +226,11 @@ validation code: |
 id: juja-2022/werke
 field: Werke
 section: Anmeldedetails
-question: Werke
+question: Stücke
 subquestion: |
   Welche Stücke/Arrangements spielen Sie?
 fields:
-  - Titel: songs[i].title
+  - Titel: songs[i].name.text
   - Komponist: songs[i].composer
   - Arrangeur: songs[i].arranger
     required: False
