@@ -459,11 +459,17 @@ fields:
     datatype: yesnowide
     default: True
   - Name der Schule: members[i].school
-    js hide if: val("members[i].student") == false
+    show if:
+      variable: members[i].student
+      is: True
   - Beruf / Aktuelle Tätigkeit: members[i].occupation
-    js show if: val("members[i].student") == false
+    show if:
+      variable: members[i].student
+      is: False
   - Diese Person ist Profimusiker\*in: members[i].professional
-    js show if: val("members[i].student") == false
+    show if:
+      variable: members[i].student
+      is: False
     datatype: yesnowide
 list collect:
   add another label: Bandmitglied hinzufügen
