@@ -175,11 +175,14 @@ code: |
   import io
   import pandas as pd
   
+  member_data = members.table.as_df()
+  
   with io.BytesIO() as f:
     with pd.ExcelWriter(f, engine='xlsxwriter') as writer:
-      members.table.as_df().to_excel(writer, sheet_name="Bandmitglieder", index=False, freeze_panes=(1,0))
-      worksheet = writer.sheet["Bandmitglieder"]
-      # TODO: Add Footer
+      member_data.to_excel(writer, sheet_name="Bandmitglieder", index=False, freeze_panes=(1,0))
+      worksheet = writer.sheets["Bandmitglieder"]
+      worksheet.write_string(0, len(member_data) + 2, "Altersdurchschnitt")
+      worksheet.write_formula(1, len(member_data) + 2, f'=AVERAGE(DATEDIF(B2:B{len(member_data)+1}; "2022-09-01"; "y"))')
     f.seek(0)
     response = msgraph.upload_file(
       daten["Anmeldungen"]["Bibliothek"],
@@ -187,10 +190,14 @@ code: |
       "Mitglieder.xlsx",
       f
     )
+  
+  assert response.status_code == 201 
   del (
+    member_data,
     f,
     writer,
     worksheet,
+    response,
     io,
     pd
   )

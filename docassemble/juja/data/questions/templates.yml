@@ -22,7 +22,8 @@ columns:
       row_item.school if row_item.student else ''
   - Aktuelle Tätigkeit: |
       row_item.occupation if not row_item.student else ''
-  - Profi: row_item.professional
+  - Profi: |
+      "Ja" if row_item.professional else "Nein"
 ---
 code: |
   key = "juja_rechnungsnummer"

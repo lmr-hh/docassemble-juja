@@ -443,7 +443,7 @@ section: Musiker\*innen
 prevent going back: True
 question: Bandmitglieder
 subquestion: |
-  Um die Anmeldung für **${ ensemble.name.full() }** zum Landeswettbewerb Jugend
+  Um die Anmeldung für **${ ensemble.name }** zum Landeswettbewerb Jugend
   Jazzt 2022 zu vervollständigen, benötigen wir eine Auskunft darüber, wer
   mitspielt. Bitte geben Sie unten die Daten der Musiker\*innen an.
 fields:
@@ -456,6 +456,7 @@ fields:
   - Position: members[i].position
     hint: 1. Trompete, ...
   - Diese Person ist Schüler: members[i].student
+    datatype: yesnowide
     default: True
   - Name der Schule: members[i].school
     js show if: val("members[i].student") == true
@@ -463,6 +464,7 @@ fields:
     js show if: val("members[i].student") == false
   - Diese Person ist Profimusiker\*in: members[i].professional
     js show if: val("members[i].student") == false
+    datatype: yesnowide
 list collect:
   add another label: Bandmitglied hinzufügen
 ---

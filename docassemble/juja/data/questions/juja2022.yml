@@ -13,11 +13,14 @@ objects:
   conditions: DAObject
   preferred_times: DAObject
   songs: DAList.using(object_type=Thing, minimum_number=1, there_are_any=True)
-  members: DAList.using(object_type=Individual, minimum_number=11, there_are_any=True)
+  members: DAList.using(object_type=Individual, minimum_number=1, there_are_any=True)
   redis: DARedis
 ---
 modules:
   - .util
+---
+imports:
+  - docassemble.base.filter
 ---
 # Dieser Abschnitt sollte nicht verändert werden.
 include:
@@ -39,6 +42,7 @@ metadata:
     Dies ist die Anmeldung zum Landeswettbewerb "Jugend Jazzt" für Jazzorchester
     Hamburg.
   exit url: https://jugendjazzt-hamburg.de/
+  exit link: leave
   revision_date: 2022-08-15
 ---
   # Das Aktivieren des Testmodus verhindert, dass Anmeldungen automatisch

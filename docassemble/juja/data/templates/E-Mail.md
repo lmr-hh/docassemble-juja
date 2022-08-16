@@ -9,7 +9,7 @@ Die Anmeldung ist erst vollständig wenn die Namen der Musiker\*innen vorliegen.
 Liegen die Namen bis zum Anmeldeschluss am 26. September nicht vor, können wir
 Ihre Anmeldung nicht akzeptieren.
 
-[Jetzt Daten angeben](${ url_action('gather_members') })
+[Jetzt Daten angeben](${ interview_url_action('gather_members') })
 
 ## Angaben zum Ensemble
 |Feld                  |Ihre Angabe                                                                                                 |
