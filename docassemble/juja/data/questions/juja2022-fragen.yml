@@ -237,7 +237,6 @@ fields:
   - Verlag: songs[i].publisher
   - Spieldauer: songs[i].duration
 list collect:
-  label: Stück ${ i + 1 }
   add another label: Stück hinzufügen
 ---
 id: juja-2022/teilnahmebedingungen
@@ -307,6 +306,7 @@ id: juja-2022/kontrolle
 continue button field: Kontrolle
 section: Ihre Anmeldung
 question: Ihre Anmeldung zur Fachtagung Musik und Demenz
+skip undefined: False
 review:
   - note: |
       % if testmodus:
@@ -369,11 +369,12 @@ review:
       |Telefonnummer |${ verbatim(billing_contact.phone_number) } |
       |Adresse       |${ adresse(admin_contact) }                 |
 
-  - Stücke ändern: Werke
-    button: |
+  - note: |
       ## Stücke
       
       ${ songs.table }
+      
+      ${ songs.add_action("Song hinzufügen") }
 
   - Erneut ansehen: Teilnahmebedingungen
     button: |

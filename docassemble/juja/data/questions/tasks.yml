@@ -131,12 +131,30 @@ code: |
       "Beschreibung.txt",
       f
     )
+  with open(songs.table.export(title="Programm"), 'rb') as f:
+    lineup_response = msgraph.upload_file(
+      drive,
+      archive_folder,
+      "Programm.xlsx",
+      f
+    )
   
   assert invoice_response.status_code == 201
   assert photo_response.status_code == 201
   assert desc_response.status_code == 201
+  assert lineup_response.status_code == 201
   
-  del drive, folder, photo, f, io, invoice_response, photo_response, desc_response
+  del (
+    drive,
+    folder,
+    photo,
+    f,
+    io,
+    invoice_response,
+    photo_response,
+    desc_response,
+    lineup_response
+  )
   if background:
       background_response_action(
         'set_variable',

@@ -7,6 +7,8 @@ columns:
   - Verlag: row_item.publisher
   - Spieldauer: row_item.duration
 allow reordering: True
+edit:
+  - name.text
 ---
 code: |
   key = "juja_rechnungsnummer"

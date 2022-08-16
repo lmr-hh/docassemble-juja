@@ -12,7 +12,7 @@ objects:
   billing_contact: Person
   conditions: DAObject
   preferred_times: DAObject
-  songs: DAList.using(object_type=Thing, there_are_any=True)
+  songs: DAList.using(object_type=Thing, minimum_number=1, there_are_any=True)
   redis: DARedis
 ---
 modules:
