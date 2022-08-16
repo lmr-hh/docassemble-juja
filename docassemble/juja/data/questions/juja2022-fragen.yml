@@ -200,7 +200,7 @@ subquestion: |
   wir bezüglich Themen zur Abrechnung kontaktieren werden.
 fields:
   - Name des Rechnungsempfängers: billing_contact.name.text
-    default: ${ ensemble.name }
+    hint: ${ ensemble.name }
   - E-Mail Adresse: billing_contact.email
     datatype: email
     default: ${ admin_contact.email }
@@ -209,10 +209,10 @@ fields:
   - Straße und Hausnummer: billing_contact.address.address
     hint: Beispiel-Straße 123
     default: ${ admin_contact.address.address }
-  - Postleitzahl: admin_contact.address.zip
+  - Postleitzahl: billing_contact.address.zip
     datatype: integer
     default: ${ admin_contact.address.zip }
-  - Ort: admin_contact.address.city
+  - Ort: billing_contact.address.city
     default: ${ admin_contact.address.city }
 validation code: |
   if billing_contact.phone_number and not phone_number_is_valid(billing_contact.phone_number, "DE"):
@@ -308,45 +308,50 @@ review:
     button: |
       ## Angaben zum Ensemble
       
-      |Feld                  |Ihre Angabe                                                                                |
-      |----------------------|-------------------------------------------------------------------------------------------|
-      |Name                  |${ ensemble.name }                                                                         |
-      |Künstlerische Leitung |${ ensemble.leader } ${ '<' + ensemble.leader_mail + '>' if ensemble.leader_mail else '' } |
-      |Größe                 |${ ensemble.size }                                                                         |
-      |Homepage              |${ ensemble.homepage }                                                                     |
-      |Facebook              |${ ensemble.facebook }                                                                     |
-      |Twitter               |${ ensemble.twitter }                                                                      |
-      |Instagram             |${ ensemble.instagram }                                                                    |
-      |Sonstige Präsenzen    |${ ensemble.presences }                                                                    |
+      | Feld                  | Ihre Angabe                                                                                                |
+      |-----------------------|------------------------------------------------------------------------------------------------------------|
+      | Name                  | ${ verbatim(ensemble.name) }                                                                               |
+      | Künstlerische Leitung | ${ verbatim(ensemble.leader) } ${ '&lt;' + ensemble.leader_mail + '&gt;' if ensemble.leader_mail else '' } |
+      | Größe                 | ${ ensemble.size }                                                                                         |
+      | Homepage              | ${ verbatim(ensemble.homepage) }                                                                           |
+      | Facebook              | ${ verbatim(ensemble.facebook) }                                                                           |
+      | Twitter               | ${ verbatim(ensemble.twitter) }                                                                            |
+      | Instagram             | ${ verbatim(ensemble.instagram) }                                                                          |
+      | Sonstige Präsenzen    | ${ verbatim(ensemble.presences) }                                                                          |
       
-      ${ ensemble.photo }
+      [CENTER] ${ ensemble.photo }
       
-      <small>(c) ${ ensemble.photo_copyright }</small>
+      [CENTER] <small>© ${ verbatim(ensemble.photo_copyright) }</small>
       
-      ${ ensemble.description | quote }
+      <div class="card">
+      <div class="card-header">Programmheft-Beschreibung</div>
+      <div class="card-body">
+      ${ ensemble.description }
+      </div>
+      </div>
   - Angaben ändern: Kontaktdaten
     button: |
       ## Administrativer Kontakt
 
-      |Feld                 |Ihre Angabe                         |
-      |---------------------|------------------------------------|
-      |Name                 |${ admin_contact.name }             |
-      |Funktion             |${ admin_contact.role }             |
-      |E-Mail               |${ admin_contact.email }            |
-      |Telefonnummer        |${ admin_contact.phone_number }     |
-      |Adresse              |${ adresse(admin_contact) }         |
-      |Newsletter-Anmeldung |${ 'Ja' if newsletter else 'Nein' } |
+      | Feld                  | Ihre Angabe                               |
+      |-----------------------|-------------------------------------------|
+      | Name                  | ${ verbatim(admin_contact.name) }         |
+      | Funktion              | ${ verbatim(admin_contact.role) }         |
+      | E-Mail                | ${ verbatim(admin_contact.email) }        |
+      | Telefonnummer         | ${ verbatim(admin_contact.phone_number) } |
+      | Adresse               | ${ adresse(admin_contact) }               |
+      | Newsletter-Anmeldung  | ${ 'Ja' if newsletter else 'Nein' }       |
 
   - Angaben ändern: Rechnungsdaten
     button: |
       ## Rechnungskontakt
       
-      |Feld          |Ihre Angabe                       |
-      |--------------|----------------------------------|
-      |Name          |${ billing_contact.name }         |
-      |E-Mail        |${ billing_contact.email }        |
-      |Telefonnummer |${ billing_contact.phone_number } |
-      |Adresse       |${ adresse(admin_contact) }       |
+      | Feld          | Ihre Angabe                                 |
+      |---------------|---------------------------------------------|
+      | Name          | ${ verbatim(billing_contact.name) }         |
+      | E-Mail        | ${ verbatim(billing_contact.email) }        |
+      | Telefonnummer | ${ verbatim(billing_contact.phone_number) } |
+      | Adresse       | ${ adresse(admin_contact) }                 |
 
   - Erneut ansehen: Teilnahmebedingungen
     button: |
@@ -354,8 +359,19 @@ review:
 
       Sie haben den Teilnahmebedingungen **zugestimmt**.
       
-      TODO: Bevorzugte Zeiten
-      <p></p>
+      Sie haben für Samstag den folgenden bevorzugten Zeitraum angegeben:
+      % if preferred_times.saturday:
+      `${ preferred_times.saturday }`
+      % else:
+      Alle Zeiten möglich
+      % endif
+      
+      Sie haben für Sonntag den folgenden bevorzugten Zeitraum angegeben:
+      % if preferred_times.sunday:
+      `${ preferred_times.sunday }`
+      % else:
+      Alle Zeiten möglich
+      % endif
   - note: |
       ## Anmelden
 

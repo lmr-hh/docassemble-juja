@@ -1,11 +1,5 @@
 def: test_defs
 mako: |
-  <%!
-  def quote(t):
-    return t.replace("\n", "\n> ")
-  %>
-
-  
   <%def name="action_button(action, message, **kwargs)">
     <button class="btn btn-primary btn-sm"
             type="button"
