@@ -84,7 +84,7 @@ code: |
 ---
 
 ---
-need: [rechnungsnummer, rechnung, msgraph]
+need: [rechnungsnummer, songs.table, rechnung, msgraph]
 code: |
   if testmodus:
     archive_task = None
@@ -92,9 +92,10 @@ code: |
     archive_task = background_action('archive', 'refresh')
 ---
 event: archive
-need: [rechnungsnummer, rechnung, msgraph]
+need: [rechnungsnummer, songs.table, rechnung, msgraph]
 code: |
   import io
+  import pandas as pd
   
   background = interface() in {"worker", "cron"}
   drive = daten["Anmeldungen"]["Bibliothek"]
@@ -131,7 +132,9 @@ code: |
       "Beschreibung.txt",
       f
     )
-  with open(songs.table.export(title="Programm"), 'rb') as f:
+  with io.BytesIO() as f:
+    with pd.ExcelWriter(f) as writer:
+      songs.table.as_df().to_excel(writer, sheet_name="Programm")
     lineup_response = msgraph.upload_file(
       drive,
       archive_folder,
@@ -149,7 +152,9 @@ code: |
     folder,
     photo,
     f,
+    writer,
     io,
+    pd,
     invoice_response,
     photo_response,
     desc_response,
