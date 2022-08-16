@@ -1,3 +1,13 @@
+table: songs.table
+rows: songs
+columns:
+  - Titel: row_item.title
+  - Komponist: row_item.composer
+  - Arrangeur: row_item.arranger
+  - Verlag: row_item.publisher
+  - Spieldauer: row_item.duration
+allow reordering: True
+---
 code: |
   key = "juja_rechnungsnummer"
   if testmodus:
