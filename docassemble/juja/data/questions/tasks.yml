@@ -7,11 +7,8 @@ code: |
     define(name, value)
   background_response()
 ---
-# The member_data forms is the data that is available to be put in spreadsheets.
-# The dictionary keys are compared to spreadsheet headings. The comparison is
-# case-insensitive.
 code: |
-  member_data = {
+  registration_data = {
     "Ensemble": ensemble.name,
     "Künstlerische Leitung": ensemble.leader,
     "E-Mail Künstlerische Leitung": ensemble.leader_mail,
@@ -49,7 +46,7 @@ code: |
       'refresh',
     )
 ---
-# This action saves member_data to a table configured via global settings.
+# This action saves registration_data to a table configured via global settings.
 event: append_to_table
 need: [rechnungsnummer, msgraph]
 code: |
@@ -58,7 +55,7 @@ code: |
     daten["Anmeldungen"]["Bibliothek"],
     daten["Anmeldungen"]["Dokument"],
     daten["Anmeldungen"]["Tabelle"],
-    member_data
+    registration_data
   ).json()
   if background:
     background_response(result)
@@ -181,8 +178,8 @@ code: |
     with pd.ExcelWriter(f, engine='xlsxwriter') as writer:
       member_data.to_excel(writer, sheet_name="Bandmitglieder", index=False, freeze_panes=(1,0))
       worksheet = writer.sheets["Bandmitglieder"]
-      worksheet.write_string(0, len(member_data) + 2, "Altersdurchschnitt")
-      worksheet.write_formula(1, len(member_data) + 2, f'=AVERAGE(DATEDIF(B2:B{len(member_data)+1}; "2022-09-01"; "y"))')
+      worksheet.write_string(len(member_data) + 2, 0, "Altersdurchschnitt")
+      worksheet.write_formula(len(member_data) + 2, 1, f'=AVERAGE(DATEDIF(B2:B{len(member_data)+1}; "2022-09-01"; "y"))')
     f.seek(0)
     response = msgraph.upload_file(
       daten["Anmeldungen"]["Bibliothek"],

@@ -23,7 +23,7 @@ columns:
   - Aktuelle Tätigkeit: |
       row_item.occupation if not row_item.student else ''
   - Profi: |
-      "Ja" if row_item.professional else "Nein"
+      "Ja" if hasattr(row_item, 'professional') and row_item.professional else "Nein"
 ---
 code: |
   key = "juja_rechnungsnummer"

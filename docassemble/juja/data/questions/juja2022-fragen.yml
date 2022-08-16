@@ -459,7 +459,7 @@ fields:
     datatype: yesnowide
     default: True
   - Name der Schule: members[i].school
-    js show if: val("members[i].student") == true
+    js hide if: val("members[i].student") == false
   - Beruf / Aktuelle Tätigkeit: members[i].occupation
     js show if: val("members[i].student") == false
   - Diese Person ist Profimusiker\*in: members[i].professional

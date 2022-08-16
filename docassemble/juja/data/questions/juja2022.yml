@@ -13,7 +13,7 @@ objects:
   conditions: DAObject
   preferred_times: DAObject
   songs: DAList.using(object_type=Thing, minimum_number=1, there_are_any=True)
-  members: DAList.using(object_type=Individual, minimum_number=1, there_are_any=True)
+  members: DAList.using(object_type=Individual, minimum_number=11, there_are_any=True)
   redis: DARedis
 ---
 modules:
