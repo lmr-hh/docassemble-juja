@@ -21,7 +21,8 @@ subquestion: |
   ```
   
   Öffnen Sie diesen Link, um die Anmeldung zu einem späteren Zeitpunkt
-  fortzusetzen.
+  fortzusetzen. Sie können die Anmeldung nur fortsetzen, wenn Sie den Link in
+  demselben Browser auf demselben Gerät öffnen, das Sie gerade verwenden.
 under: ""
 buttons:
   - Jetzt fortsetzen: continue
@@ -51,7 +52,9 @@ code: |
   Abschicken
   if testmodus:
     Testergebnisse
-  Mitspieler
+  Zwischenergebnis
+  members.gather()
+  MitgliederUpdate
   Fertig
 ---
 event: Anmeldefrist
@@ -224,7 +227,6 @@ validation code: |
     validation_error('Bitte geben Sie eine gültige Telefonnummer ein.', field='billing_contact.phone_number')
 ---
 id: juja-2022/werke
-field: Werke
 section: Anmeldedetails
 question: Stücke
 subquestion: |
@@ -236,6 +238,7 @@ fields:
     required: False
   - Verlag: songs[i].publisher
   - Spieldauer: songs[i].duration
+    hint: mm:ss
 list collect:
   add another label: Stück hinzufügen
 ---
@@ -414,8 +417,8 @@ subquestion:
   Ihre Anmeldung wird gerade abgeschickt. Dies kann einen Moment dauern. Bitte lassen
   Sie dieses Fenster geöffnet, bis die Anmeldung erfolgreich abgeschickt wurde.
 ---
-id: juja-2022/bestaetigung
-event: Fertig
+id: juja-2022/zwischnergebnis
+field: Zwischenergebnis
 section: Ihre Anmeldung
 prevent going back: True
 question: Ihre Anmeldung
@@ -424,12 +427,60 @@ subquestion: |
   haben wir Ihnen auch per Mail zugeschickt.
 
   - [Rechnung direkt herunterladen](${ rechnung.pdf.url_for() })
-
-  Wir freuen uns über Ihre Teilnahme.
-
-  Klicken Sie auf "Fertig", um die Anmeldung zu beenden.
+  
+  Bedenken Sie, dass die Anmeldung erst vollständig ist, wenn Sie die Namen der
+  mitspielenden Musiker\*innen angegeben haben. Sie können dies jetzt direkt tun
+  oder später (Sie haben dazu einen Link per E-Mail erhalten). Sie müssen die
+  Mitspielenden vor Ablauf der Anmeldefrist angeben.
 buttons:
-  - Fertig: leave
+  - Jetzt Daten angeben: continue
+---
+event: gather_members
+code: Zwischenergebnis = True
+---
+id: juja-2022/mitglieder
+section: Musiker\*innen
+prevent going back: True
+question: Bandmitglieder
+subquestion: |
+  Um die Anmeldung für **${ ensemble.name.full() }** zum Landeswettbewerb Jugend
+  Jazzt 2022 zu vervollständigen, benötigen wir eine Auskunft darüber, wer
+  mitspielt. Bitte geben Sie unten die Daten der Musiker\*innen an.
+fields:
+  - Vorname: members[i].name.first
+  - Nachname: members[i].name.last
+  - Geburtstag: members[i].birthday
+    datatype: date
+  - Wohnort: members[i].address.city
+  - Instrument: members[i].instrument
+  - Position: members[i].position
+    hint: 1. Trompete, ...
+  - Diese Person ist Schüler: members[i].student
+    default: True
+  - Name der Schule: members[i].school
+    js show if: val("members[i].student") == true
+  - Beruf / Aktuelle Tätigkeit: members[i].occupation
+    js show if: val("members[i].student") == false
+  - Diese Person ist Profimusiker\*in: members[i].professional
+    js show if: val("members[i].student") == false
+list collect:
+  add another label: Bandmitglied hinzufügen
+---
+id: juja-2022/bestaetigung
+event: Fertig
+section: Musiker\*innen
+prevent going back: True
+question: Ihre Anmeldung
+subquestion: |
+  Vielen Dank. Wir haben Ihre Daten erhalten. Ihre Anmeldung ist nun
+  vollständig.
+  
+  Bitte überweisen Sie zeitnah den Teilnahmebeitrag (falls noch nicht
+  geschehen).
+  
+  Wir freuen uns auf Sie.
+buttons:
+  - Fertig: exit
 ---
 template: testergebnis
 usedefs: [test_defs]

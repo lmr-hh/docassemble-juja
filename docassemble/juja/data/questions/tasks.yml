@@ -84,7 +84,7 @@ code: |
 ---
 
 ---
-need: [rechnungsnummer, songs.table, rechnung, msgraph]
+need: [rechnungsnummer, rechnung, msgraph]
 code: |
   if testmodus:
     archive_task = None
@@ -92,7 +92,7 @@ code: |
     archive_task = background_action('archive', 'refresh')
 ---
 event: archive
-need: [rechnungsnummer, songs.table, rechnung, msgraph]
+need: [rechnungsnummer, rechnung, msgraph]
 code: |
   import io
   import pandas as pd
@@ -100,6 +100,7 @@ code: |
   background = interface() in {"worker", "cron"}
   drive = daten["Anmeldungen"]["Bibliothek"]
   folder = daten["Anmeldungen"]["Ordner"]
+  lineup = songs.table.as_df()
   
   archive_folder = msgraph.post(
     f"drives/{drive}/items/{folder}/children",
@@ -133,8 +134,8 @@ code: |
       f
     )
   with io.BytesIO() as f:
-    with pd.ExcelWriter(f) as writer:
-      songs.table.as_df().to_excel(writer, sheet_name="Programm")
+    lineup.to_excel(f, sheet_name="Programm", index=False, freeze_panes=(1,0))
+    f.seek(0)
     lineup_response = msgraph.upload_file(
       drive,
       archive_folder,
@@ -151,8 +152,8 @@ code: |
     drive,
     folder,
     photo,
+    lineup,
     f,
-    writer,
     io,
     pd,
     invoice_response,
@@ -167,6 +168,33 @@ code: |
       )
   else:
     json_response({})
+---
+
+---
+code: |
+  import io
+  import pandas as pd
+  
+  with io.BytesIO() as f:
+    with pd.ExcelWriter(f, engine='xlsxwriter') as writer:
+      members.table.as_df().to_excel(writer, sheet_name="Bandmitglieder", index=False, freeze_panes=(1,0))
+      worksheet = writer.sheet["Bandmitglieder"]
+      # TODO: Add Footer
+    f.seek(0)
+    response = msgraph.upload_file(
+      daten["Anmeldungen"]["Bibliothek"],
+      archive_folder,
+      "Mitglieder.xlsx",
+      f
+    )
+  del (
+    f,
+    writer,
+    worksheet,
+    io,
+    pd
+  )
+  MitgliederUpdate = True
 ---
 
 ---

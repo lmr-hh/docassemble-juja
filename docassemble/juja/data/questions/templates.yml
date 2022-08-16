@@ -10,6 +10,20 @@ allow reordering: True
 edit:
   - name.text
 ---
+table: members.table
+rows: members
+columns:
+  - Name: row_item.name.full()
+  - Geburtstag: row_item.birthday
+  - Wohnort: row_item.address.city
+  - Instrument: row_item.instrument
+  - Position: row_item.position
+  - Schule: |
+      row_item.school if row_item.student else ''
+  - Aktuelle Tätigkeit: |
+      row_item.occupation if not row_item.student else ''
+  - Profi: row_item.professional
+---
 code: |
   key = "juja_rechnungsnummer"
   if testmodus:
