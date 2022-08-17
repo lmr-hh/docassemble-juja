@@ -271,3 +271,13 @@ code: |
   else:
     json_response(result)
 ---
+
+---
+event: send_interview_url
+need: [mailgun, admin_contact]
+code: |
+  result = mailgun.send_email(
+    to=[admin_contact],
+    template=interview_url_email
+  )
+  json_response(result)

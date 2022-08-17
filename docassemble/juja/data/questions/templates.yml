@@ -62,8 +62,27 @@ content file: E-Mail.md
 template: orga_email
 # Der E-Mail-Betreff
 subject: Das Ensemble ${ ensemble.name } hat sich zu Jugend Jazzt angemeldet
-# Diese Datei enthält den Mailinhalt (die Datei befindet sich im `templates`
-# Ordner).
-content file: Benachrichtigung.md
----
+content: |
+  Hallo,
 
+  Das Ensemble ${ ensemble.name } wurde soeben zu Jugend Jazzt angemeldet.
+
+  [Anmeldeliste öffnen](${ tabelle['datei']['webUrl'] })  
+  [Anmeldeordner öffnen](${ ordner['webUrl'] })
+
+  Viele Grüße  
+  Das Jugend Jazzt Team des Landesmusikrates Hamburg
+---
+template: interview_url_email
+subject: Anmelde-Link für Jugend Jazzt
+content: |
+  Hallo ${ admin_contact },
+  
+  In dieser E-Mail erhalten Sie den Link, mit dem Sie die Anmeldung für
+  **${ ensemble.name }** zum Landeswettbewerb Jugend Jazzt 2022 fortsetzen
+  können.
+  
+  [Anmeldung fortsetzen](${ interview_url() })
+  
+  Viele Grüße
+  Das Jugend Jazzt Team des Landesmusikrates Hamburg

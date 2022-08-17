@@ -15,7 +15,15 @@ code: |
 code: |
   def da_error(value, code=412):
       from docassemble.base.error import DAError
-      raise DAError(value, code=code)
+      if testmodus:
+        raise DAError(value, code=code)
+      else:
+        raise DAError(
+          "Diese Anmeldung ist zur Zeit nicht verfügbar, da ein "
+            "Konfigurationsfehler vorliegt. Wir arbeiten daran, das Problem "
+            "schnellstmöglich zu beheben.",
+          code=code
+        )
 ---
 code: |
   _file = msgraph.get_file_info(

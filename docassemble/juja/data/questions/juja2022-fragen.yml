@@ -3,22 +3,30 @@ default screen parts:
   under: |
     % if not defined('Kontrolle'):
     ---
-    Um Ihre bisherigen Angaben zu sichern und die Anmeldung zu einem späteren
-    Zeitpunkt fortzusetzen, klicken Sie auf
-    <a class="btn btn-secondary btn-sm" href="${ url_action('Pause') }">Später fortsetzen</a>.
+    Sie können das Ausfüllen der Anmeldung pausieren und zu einem späteren
+    Zeitpunkt fortzusetzen. _Die Eingaben der aktuellen Seite gehen dabei
+    verloren_.
     
-    Die Eingaben der aktuellen Seite gehen dabei verloren.
+    <a class="btn btn-secondary btn-sm" href="${ url_action('Pause') }">Anmeldung pausieren</a>
     % endif
 ---
 event: Pause
 question: Später fortsetzen
 subquestion: |
-  Sie können die Anmeldung unterbrechen und später fortsetzen. Notieren Sie sich
-  dazu folgenden Link:
+  Die Anmeldung ist pausiert. Um die Anmeldung später fortzusetzen, notieren Sie
+  sich den folgenden Link:
   
   ```
   ${ interview_url() }
   ```
+  
+  % if defined('admin_contact.email'):
+  <button class="btn btn-secondary btn-sm"
+          type="button"
+          data-da-action='send_interview_url'
+          data-da-message="E-Mail gesendet. Es kann einen Moment dauert, bis die E-Mail in Ihrem Postfach ankommt.">Per E-Mail senden</button>
+  <small>Die E-Mail wird an ${ admin_contact.email } gesendet.</small>
+  % endif
   
   Öffnen Sie diesen Link, um die Anmeldung zu einem späteren Zeitpunkt
   fortzusetzen. Sie können die Anmeldung nur fortsetzen, wenn Sie den Link in
@@ -65,7 +73,8 @@ subquestion: |
   Leider ist die Anmeldefrist zur Teilnahme bereits abgelaufen.
 
   Wenn Sie sich bereits angemeldet haben, erhalten Sie per E-Mail alle weiteren
-  Informationen.
+  Informationen. Wenden Sie sich bei Fragen bitte per Mail an das Jugend Jazzt
+  Team des Landesmusikrates Hamburg: [juja@lmr-hh.de](mailto:juja@lmr-hh.de]
 under: ""
 buttons:
   - Ende: exit
@@ -87,15 +96,16 @@ subquestion: |
   herzlich willkommen bei der Anmeldung zum Landeswettbewerb **Jugend Jazzt**
   2022. Wir freuen uns sehr über Ihr Interesse.
   
-  Bitte füllen Sie diese Anmeldung vollständig aus. Im Laufe der Anmeldung
+  Über dieses Formular melden Sie Ihr Jazzorchester zum Wettbewerb an. Bitte
+  füllen Sie die Anmeldung vollständig aus. Im Laufe der Anmeldung
   werden die folgenden Daten benötigt. Bitte halten Sie alle erforderlichen
   Informationen bereit:
   
-  - Organisatorischer Kontakt, Rechnungskontakt
-  - Informationen über das anzumeldende Ensemble (Name, Leitung, Größe, ...)
+  - Informationen über das anzumeldende Ensemble (Name, Leitung, Online-Präsenzen, ...)
   - Foto und Programmhefttext zum Ensemble
-  - Liste der Bandmitglieder (Name, Wohnort, Geburtsdatum, Schule/Beruf, ...)
+  - Organisatorischer Kontakt, Rechnungskontakt
   - Programm
+  - Liste der Bandmitglieder (Name, Wohnort, Geburtsdatum, Schule/Beruf, ...)
   
   Wenn Sie nicht alles auf einmal erledigen können, lassen sich
   Zwischenergebnisse speichern ("Später Fortsetzen"). Bei weiteren Fragen setzen
@@ -106,8 +116,10 @@ subquestion: |
   - E-Mail: [juja@lmr-hh.de](mailto:juja@lmr-hh.de)
   - Telefon: 040 6452069
   
-  Beachten Sie, dass Ihre Anmeldung erst als eingereicht gilt, wenn Sie die
-  vollständige Liste der Bandmitglieder eingereicht haben.
+  Die Liste der Bandmitglieder können Sie auch nachträglich einreichen. Beachten
+  Sie jedoch, dass Ihre Anmeldung erst als eingereicht gilt, wenn Sie die
+  vollständige Liste der Bandmitglieder bis zum Anmeldeschluss am 26. September
+  2022 eingereicht haben.
   
   Wir freuen uns auf Ihre Teilnahme!
 under: |
@@ -249,7 +261,7 @@ question: Teilnahmebedingungen
 subquestion: |
   Geben Sie hier für jeden der beiden Wettbewerbstage einen bevorzugten Zeitraum
   für Ihren Auftritt an. Wir werden versuchen diese Angaben zu berücksichtigen.
-  Wir können allerdings keine Garantie geben, dass Ihr zugewiesener Zeitslot
+  Wir können allerdings keine Garantie geben, dass die Ihnen zugewiesene Zeit
   auch tatsächlich in Ihrem bevorzugten Zeitraum liegt.
   
   Wenn Sie keinen Zeitraum angeben, gehen wir davon aus, dass alle Zeiten
@@ -401,11 +413,11 @@ review:
   - note: |
       ## Anmelden
 
-      Wenn Sie ihre Daten kontrolliert haben, klicken Sie auf "Jetzt verbindlich anmelden",
-      um Ihre Anmeldung abzuschicken.
+      Wenn Sie ihre Daten kontrolliert haben, klicken Sie auf "Jetzt verbindlich
+      anmelden", um Ihre Anmeldung abzuschicken.
       
-      Sie erhalten sowohl Ihre Anmeldung als auch eine
-      Rechnung für den Teilnahmebeitrag per E-Mail.
+      Sie erhalten sowohl Ihre Anmeldung als auch eine Rechnung für den
+      Teilnahmebeitrag per E-Mail.
 continue button label: Jetzt verbindlich anmelden
 ---
 id: juja-2022/warten
@@ -488,7 +500,7 @@ subquestion: |
   
   Wir freuen uns auf Sie.
 buttons:
-  - Fertig: exit
+  - Fertig: leave
 ---
 template: testergebnis
 usedefs: [test_defs]
