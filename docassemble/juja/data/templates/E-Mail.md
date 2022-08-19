@@ -77,7 +77,7 @@ ${ quote_paragraphs(ensemble.description) }
 |Name |Geburtstag |Wohnort |Instrument |Position |Schüler\*in |Schule |Tätigkeit |Profi |
 |-----|-----------|--------|-----------|---------|------------|-------|----------|------|
 % for member in members:
-|${ member.name.full() } |${ member.birthday } |${ member.address.city } |${ member.instrument } |${ member.position } |${ member.student } |${ member.school } |${ member.occupation } |${ member.professional } |
+|${ member.name.full() } |${ member.birthday } |${ member.address.city } |${ member.instrument } |${ member.position } |${ 'Ja' if member.student else 'Nein' } |${ member.school if defined('member.school') else '' } |${ member.occupation if defined('member.occupation') else '' } |${ 'Ja' if defined('member.professional') and member.professional else 'Nein' } |
 % endfor
 
 ---
