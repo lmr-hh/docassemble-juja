@@ -39,12 +39,13 @@ ${ quote_paragraphs(ensemble.description) }
 
 ## Rechnungskontakt
 
-|Feld          |Ihre Angabe                                 |
-|--------------|--------------------------------------------|
-|Name          |${ verbatim(billing_contact.name) }         |
-|E-Mail        |${ verbatim(billing_contact.email) }        |
-|Telefonnummer |${ verbatim(billing_contact.phone_number) } |
-|Adresse       |${ adresse(admin_contact) }                 |
+|Feld               |Ihre Angabe                                  |
+|-------------------|---------------------------------------------|
+|Rechnungsempfänger |${ verbatim(billing_contact.recipient) }     |
+|Kontakt            |${ verbatim(billing_contact.name) }          |
+|E-Mail             |${ verbatim(billing_contact.email) }         |
+|Telefonnummer      |${ verbatim(billing_contact.phone_number) }  |
+|Adresse            |${ adresse(admin_contact) }                  |
 
 Viele Grüße  
 Das Jugend Jazzt Team des Landesmusikrates Hamburg

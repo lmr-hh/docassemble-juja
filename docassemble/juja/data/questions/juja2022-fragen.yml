@@ -1,14 +1,17 @@
+# TODO: Ensemble -> Jazzorchester
 ---
 default screen parts:
-  under: |
+  pre: |
+    <div class="alert alert-info" role="alert">
     % if not defined('Kontrolle'):
-    ---
     Sie können das Ausfüllen der Anmeldung pausieren und zu einem späteren
-    Zeitpunkt fortzusetzen. _Die Eingaben der aktuellen Seite gehen dabei
-    verloren_.
+    Zeitpunkt fortzusetzen. <strong>Die Eingaben der folgenden Seite gehen dabei
+    verloren</strong>.
     
     <a class="btn btn-secondary btn-sm" href="${ url_action('Pause') }">Anmeldung pausieren</a>
     % endif
+    </div>
+    ---
 ---
 event: Pause
 question: Später fortsetzen
@@ -81,8 +84,8 @@ buttons:
 ---
 id: juja-2022/intro
 field: Einleitung
-section: Persönliche Daten
-question: Einleitung
+section: Einleitung
+question: Anmeldung Jugend Jazzt 2022 -- Seid dabei!
 subquestion: |
   % if testmodus:
   <div class="alert alert-warning" role="alert">
@@ -94,27 +97,25 @@ subquestion: |
   Liebe Bigbandleiter\*innen, liebe Jazzer\*innen,
   
   herzlich willkommen bei der Anmeldung zum Landeswettbewerb **Jugend Jazzt**
-  2022. Wir freuen uns sehr über Ihr Interesse.
+  für Jazzorchester in Hamburg 2022. Wir freuen uns sehr über Ihr Interesse.
   
   Über dieses Formular melden Sie Ihr Jazzorchester zum Wettbewerb an. Bitte
   füllen Sie die Anmeldung vollständig aus. Im Laufe der Anmeldung
-  werden die folgenden Daten benötigt. Bitte halten Sie alle erforderlichen
-  Informationen bereit:
+  werden die folgenden Daten benötigt. Bitte halten Sie die folgenden
+  erforderlichen Informationen bereit:
   
   - Informationen über das anzumeldende Ensemble (Name, Leitung, Online-Präsenzen, ...)
-  - Foto und Programmhefttext zum Ensemble
+  - Foto und Programmhefttext (max. 1000 Zeichen) zum Ensemble
   - Organisatorischer Kontakt, Rechnungskontakt
-  - Programm
+  - Programm für Wertungsspiel
   - Liste der Bandmitglieder (Name, Wohnort, Geburtsdatum, Schule/Beruf, ...)
+  
+  Für die Rahmenbedingungen beachten Sie bitte die Details der [Ausschreibung](https://jugendjazzt-hamburg.de/images/2022/Ausschreibung_Hamburger_Landeswettbewerb_Jugend_jazzt_2022.pdf).
   
   Wenn Sie nicht alles auf einmal erledigen können, lassen sich
   Zwischenergebnisse speichern ("Später Fortsetzen"). Bei weiteren Fragen setzen
-  Sie sich bitte mit dem
-  [Organisationsteam vom Landeswettbewerb](mailto:juja@lmr-hh.de) Jugend Jazzt
-  Hamburg in Verbindung:
-  
-  - E-Mail: [juja@lmr-hh.de](mailto:juja@lmr-hh.de)
-  - Telefon: 040 6452069
+  Sie sich bitte per Mail mit dem Organisationsteam vom Landeswettbewerb Jugend
+  Jazzt über [juja@lmr-hh.de](mailto:juja@lmr-hh.de) Hamburg in Verbindung:
   
   Die Liste der Bandmitglieder können Sie auch nachträglich einreichen. Beachten
   Sie jedoch, dass Ihre Anmeldung erst als eingereicht gilt, wenn Sie die
@@ -143,14 +144,28 @@ fields:
   - E-Mail der künstlerischen Leitung: ensemble.leader_mail
     datatype: email
     required: False
-  - Anzahl der Musiker\*innen: ensemble.size
+  - Anzahl der Musiker\*innen (exklusive Bandleitung): ensemble.size
     datatype: integer
+    min: 11
   - note: |
       Die folgenden Daten werden im Programmheft zu Ihrem Ensemble erscheinen.
       Bitte stellen Sie sicher, dass alle abgebildeten Personen und die
       Fotografen mit der Veröffentlichung im Programmheft sowie eventuell mit
       Veröffentlichungen in weiteren Druckerzeugnissen oder im Web im
       Zusammenhang mit dem Landeswettbewerb Jugend Jazzt einverstanden sind.
+  - Foto des Ensembles: ensemble.photo
+    datatype: file
+    accept: "'image/jpeg, image/png'"
+    help: Erlaubte Bildformate sind JPEG und PNG.
+  - note: |
+      Bitte Laden Sie das Bild in druckfähiger Auflösung (mind. 300 dpi) hoch.
+  - Copyright-Angabe zum Foto: ensemble.photo_copyright
+    hint: z.B. Name des Fotografen
+  - Informationen zur Bigband/zum Jazzorchester: ensemble.description
+    datatype: text
+    input type: area
+    maxlength: 1000
+    help: Maximal 1000 Zeichen
   - Homepage: ensemble.homepage
     required: False
   - Facebook: ensemble.facebook
@@ -163,20 +178,6 @@ fields:
     datatype: text
     input type: area
     required: False
-  - Foto des Ensembles: ensemble.photo
-    datatype: file
-    accept: "'image/jpeg, image/png'"
-    help: Erlaubte Bildformate sind JPEG und PNG.
-  - note: |
-      Bitte Laden Sie das Bild in druckfähiger Auflösung (mind. 300 dpi) hoch.
-  - Copyright-Angabe zum Foto: ensemble.photo_copyright
-    hint: z.B. Name des Fotografen
-    required: False
-  - Informationen zur Bigband/zum Jazzorchester: ensemble.description
-    datatype: text
-    input type: area
-    maxlength: 1000
-    help: Maximal 1000 Zeichen
 ---
 id: juja-2022/persoenliche-daten
 field: Kontaktdaten
@@ -213,14 +214,17 @@ field: Rechnungsdaten
 section: Rechnungskontakt
 question: Rechnungskontakt
 subquestion: |
-  Für die Teilnahme am Wettbewerb wird ein Teilnahmebeitrag von **50,00 €** pro
+  Für die Teilnahme am Landeswettbewerb wird ein Teilnahmebeitrag von **50,00 €** pro
   Ensemble erhoben. Nach Abschicken dieser Anmeldung erhalten Sie eine Rechnung.
   
   Bitte geben Sie hier die Rechnungsadresse sowie einen Rechnungskontakt an, den
   wir bezüglich Themen zur Abrechnung kontaktieren werden.
 fields:
-  - Name des Rechnungsempfängers: billing_contact.name.text
-    hint: ${ ensemble.name }
+  - Name des Rechnungsempfängers: billing_contact.recipient
+    hint: Träger oder Vorname und Nachname
+  - Ansprechpartner\*in: billing_contact.name.text
+    hint: Vorname und Nachname
+    required: False
   - E-Mail Adresse: billing_contact.email
     datatype: email
     default: ${ admin_contact.email }
@@ -377,12 +381,13 @@ review:
     button: |
       ## Rechnungskontakt
       
-      |Feld          |Ihre Angabe                                 |
-      |--------------|--------------------------------------------|
-      |Name          |${ verbatim(billing_contact.name) }         |
-      |E-Mail        |${ verbatim(billing_contact.email) }        |
-      |Telefonnummer |${ verbatim(billing_contact.phone_number) } |
-      |Adresse       |${ adresse(admin_contact) }                 |
+      |Feld               |Ihre Angabe                                 |
+      |-------------------|--------------------------------------------|
+      |Rechnungsempfänger |${ verbatim(billing_contact.recipient) }    |
+      |Ansprechpartner    |${ verbatim(billing_contact.name) }         |
+      |E-Mail             |${ verbatim(billing_contact.email) }        |
+      |Telefonnummer      |${ verbatim(billing_contact.phone_number) } |
+      |Adresse            |${ adresse(admin_contact) }                 |
 
   - note: |
       ## Stücke
