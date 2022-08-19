@@ -1,6 +1,15 @@
-__all__ = ["adresse"]
+__all__ = ["adresse", "is_time"]
 
-from docassemble.base.util import Address, Person
+from datetime import datetime
+from docassemble.base.util import Address, Person, validation_error
+
+
+def is_time(x: str):
+    try:
+        datetime.strptime(x, "%M:%S")
+        return True
+    except ValueError:
+        validation_error("Das Format scheint nicht richtig zu sein. Geben Sie die Dauer im Format mm:ss an.")
 
 
 def adresse(thing):

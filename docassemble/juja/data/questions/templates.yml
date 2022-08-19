@@ -13,7 +13,8 @@ edit:
 table: members.table
 rows: members
 columns:
-  - Name: row_item.name.full()
+  - Vorname: row_item.name.first
+  - Nachname: row_item.name.last
   - Geburtstag: row_item.birthday
   - Wohnort: row_item.address.city
   - Instrument: row_item.instrument
@@ -24,6 +25,8 @@ columns:
       row_item.occupation if not row_item.student else ''
   - Profi: |
       "Ja" if hasattr(row_item, 'professional') and row_item.professional else "Nein"
+edit:
+  - name.first
 ---
 code: |
   key = "juja_rechnungsnummer"
@@ -61,11 +64,11 @@ content file: E-Mail.md
 # versendet wird. Der Wert von template sollte nicht verändert werden.
 template: orga_email
 # Der E-Mail-Betreff
-subject: Das Ensemble ${ ensemble.name } hat sich zu Jugend Jazzt angemeldet
+subject: Das Jazzorchester ${ ensemble.name } hat sich zu Jugend Jazzt angemeldet
 content: |
   Hallo,
 
-  Das Ensemble ${ ensemble.name } wurde soeben zu Jugend Jazzt angemeldet.
+  Das Jazzorchester ${ ensemble.name } wurde soeben zu Jugend Jazzt angemeldet.
 
   [Anmeldeliste öffnen](${ tabelle['datei']['webUrl'] })  
   [Anmeldeordner öffnen](${ ordner['webUrl'] })

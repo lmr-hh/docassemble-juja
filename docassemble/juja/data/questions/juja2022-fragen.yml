@@ -1,17 +1,15 @@
-# TODO: Ensemble -> Jazzorchester
 ---
 default screen parts:
   pre: |
+    % if defined('Ensemble') and not defined('Kontrolle'):
     <div class="alert alert-info" role="alert">
-    % if not defined('Kontrolle'):
     Sie können das Ausfüllen der Anmeldung pausieren und zu einem späteren
     Zeitpunkt fortzusetzen. <strong>Die Eingaben der folgenden Seite gehen dabei
     verloren</strong>.
     
     <a class="btn btn-secondary btn-sm" href="${ url_action('Pause') }">Anmeldung pausieren</a>
-    % endif
     </div>
-    ---
+    % endif
 ---
 event: Pause
 question: Später fortsetzen
@@ -44,7 +42,7 @@ sections:
   - Rechnungskontakt
   - Anmeldedetails
   - Ihre Anmeldung
-  - Musiker\*innen
+  - Musiker*innen
 ---
 # Die Reihenfolge, in der Fragen gestellt werden. Dies ist eine erweiterte
 # Funktion, die nicht leichtfertig verändert werden sollte.
@@ -57,15 +55,17 @@ code: |
   Kontaktdaten
   Rechnungsdaten
   songs.gather()
-  
+  if Mitspielende:
+    MitgliederUpdate
   Teilnahmebedingungen
+  
   Kontrolle
   Abschicken
   if testmodus:
     Testergebnisse
-  Zwischenergebnis
-  members.gather()
-  MitgliederUpdate
+  if not Mitspielende:
+    Zwischenergebnis
+    MitgliederUpdate
   Fertig
 ---
 event: Anmeldefrist
@@ -244,32 +244,46 @@ validation code: |
 ---
 id: juja-2022/werke
 section: Anmeldedetails
-question: Stücke
+question: Programm für das Wertungsspiel
 subquestion: |
-  Welche Stücke/Arrangements spielen Sie?
+  Die maximale Spieldauer inklusive Ansagen etc. beträgt 20 Minuten. Es sind mindestens zwei Stücke unterschiedlichen Charakters vorzutragen. Eine stilistische Einschränkung besteht nicht, sodass Stücke von Traditional Jazz bis zum Free Jazz gespielt werden können.
+  
+  In jedem Stück müssen Teile mit Improvisationen enthalten sein. Sofern eigene Kompositionen und Arrangements zur Aufführung kommen, was ausdrücklich erwünscht ist, muss der Jury das Notenmaterial (Partitur) in zweifacher Ausfertigung vorgelegt werden.
+  
+  Bitte geben Sie die Stücke in der zu spielenden Reihenfolge an.
 fields:
   - Titel: songs[i].name.text
-  - Komponist: songs[i].composer
-  - Arrangeur: songs[i].arranger
+  - Komponist\*in: songs[i].composer
+  - Arrangeur\*in: songs[i].arranger
     required: False
   - Verlag: songs[i].publisher
   - Spieldauer: songs[i].duration
     hint: mm:ss
+    validate: is_time
 list collect:
   add another label: Stück hinzufügen
+---
+id: juna-2022/mitspielende
+section: Anmeldedetails
+question: Mitspielende
+subquestion: |
+  Für Ihre Anmeldung zum Landeswettbewerb müssen Sie die Namen, Geburtsdaten,
+  Instrument/Position und aktuelle Beschäftigung der Musiker\*innen angeben.
+  Sie können dies jetzt tun oder die Daten später nachreichen. Spätestens zum
+  Anmeldeschluss am 26. September müssen alle Daten vorliegen.
+  
+  Möchten Sie die Daten der Musiker\*innen jetzt angeben?
+yesno: Mitspielende
 ---
 id: juja-2022/teilnahmebedingungen
 field: Teilnahmebedingungen
 section: Anmeldedetails
-question: Teilnahmebedingungen
+question: Teilnahmebedingungen und Datenschutz
 subquestion: |
-  Geben Sie hier für jeden der beiden Wettbewerbstage einen bevorzugten Zeitraum
-  für Ihren Auftritt an. Wir werden versuchen diese Angaben zu berücksichtigen.
-  Wir können allerdings keine Garantie geben, dass die Ihnen zugewiesene Zeit
+  Im Folgenden erhalten Sie die Möglichkeit, jeweils einen bevorzugten Zeitraum
+  pro Wettbewerbstag anzugeben. Wir werden versuchen diese Angaben zu berücksichtigen,
+  wir können allerdings **keine Garantie** geben, dass die Ihnen zugewiesene Zeit
   auch tatsächlich in Ihrem bevorzugten Zeitraum liegt.
-  
-  Wenn Sie keinen Zeitraum angeben, gehen wir davon aus, dass alle Zeiten
-  gleichermaßen möglich sind.
 fields:
   - Bevorzugter Zeitraum am Samstag, 12. November: preferred_times.saturday
     required: False
@@ -283,8 +297,9 @@ fields:
       - [Datenschutzhinweise](/packagestatic/docassemble.lmrhh/datenschutzhinweise.html)
 
   - label:
-      Mir ist bewusst, dass nicht alle Zeitwünsche berücksichtigt werden können
-      und dass meinem Ensemble ein verbindliches Zeitfenster zugewiesen wird.
+      Ich nehme zustimmend zur Kenntnis, dass meinem Ensemble vom Veranstalter
+      ein verbindliches Zeitfenster zugewiesen wird und dass die oben
+      angegebenen Zeitwünsche ggf. nicht berücksichtigt werden können.
     field: conditions.timing
     datatype: yesnowide
     validate: >
@@ -324,7 +339,7 @@ code: |
 id: juja-2022/kontrolle
 continue button field: Kontrolle
 section: Ihre Anmeldung
-question: Ihre Anmeldung zur Fachtagung Musik und Demenz
+question: Ihre Anmeldung zum Landeswettbewerb Jugend Jazzt 2022
 skip undefined: False
 review:
   - note: |
@@ -336,7 +351,7 @@ review:
       </div>
       % endif
       
-      Bevor Sie Ihre Anmeldung abschicken, haben Sie noch einmal die Möglichkeit,
+      Bevor Sie Ihre Anmeldung verbindlich abschicken, haben Sie noch einmal die Möglichkeit,
       Ihre Angaben zu überprüfen. Nachdem Sie Ihre Anmeldung abgeschickt haben,
       bekommen Sie eine Bestätigung und die Rechnung per E-Mail.
   - Angaben ändern: Ensemble
@@ -396,9 +411,18 @@ review:
       
       ${ songs.add_action("Song hinzufügen") }
 
+  - note: |
+      % if Mitspielende:
+      ## Musiker\*innen
+      
+      ${ members.table }
+      
+      ${ members.add_action("Person hinzufügen") }
+      % endif
+
   - Erneut ansehen: Teilnahmebedingungen
     button: |
-      ## Teilnahmebedingungen
+      ## Teilnahmebedingungen und Datenschutz
 
       Sie haben den Teilnahmebedingungen **zugestimmt**.
       
@@ -463,6 +487,8 @@ subquestion: |
   Um die Anmeldung für **${ ensemble.name }** zum Landeswettbewerb Jugend
   Jazzt 2022 zu vervollständigen, benötigen wir eine Auskunft darüber, wer
   mitspielt. Bitte geben Sie unten die Daten der Musiker\*innen an.
+  
+  Beachten Sie die Rahmenbedingungen aus der [Ausschreibung](https://jugendjazzt-hamburg.de/images/2022/Ausschreibung_Hamburger_Landeswettbewerb_Jugend_jazzt_2022.pdf).
 fields:
   - Vorname: members[i].name.first
   - Nachname: members[i].name.last
@@ -472,7 +498,7 @@ fields:
   - Instrument: members[i].instrument
   - Position: members[i].position
     hint: 1. Trompete, ...
-  - Diese Person ist Schüler: members[i].student
+  - Diese Person ist Schüler\*in: members[i].student
     datatype: yesnowide
     default: True
   - Name der Schule: members[i].school
@@ -490,6 +516,7 @@ fields:
     datatype: yesnowide
 list collect:
   add another label: Bandmitglied hinzufügen
+continue button label: Abschicken
 ---
 id: juja-2022/bestaetigung
 event: Fertig
@@ -502,6 +529,8 @@ subquestion: |
   
   Bitte überweisen Sie zeitnah den Teilnahmebeitrag (falls noch nicht
   geschehen).
+  
+  - [Rechnung herunterladen](${ rechnung.pdf.url_for() })
   
   Wir freuen uns auf Sie.
 buttons:
