@@ -410,6 +410,9 @@ review:
   - note: |
       ## Stücke
       
+      Bitte geben Sie die Stücke in der Reihenfolge an, in der sie gespielt
+      werden.
+      
       ${ songs.table }
       
       ${ songs.add_action("Song hinzufügen") }
@@ -504,10 +507,12 @@ fields:
     datatype: yesnowide
     default: True
   - Name der Schule: members[i].school
+    default: ''
     show if:
       variable: members[i].student
       is: True
   - Beruf / Aktuelle Tätigkeit: members[i].occupation
+    default: ''
     show if:
       variable: members[i].student
       is: False
