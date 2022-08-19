@@ -56,13 +56,16 @@ code: |
   Rechnungsdaten
   songs.gather()
   if Mitspielende:
-    MitgliederUpdate
+    members.gather()
   Teilnahmebedingungen
   
   Kontrolle
   Abschicken
   if testmodus:
     Testergebnisse
+  if Mitspielende:
+    MitgliederUpdate
+  
   if not Mitspielende:
     Zwischenergebnis
     MitgliederUpdate
@@ -481,7 +484,6 @@ code: Zwischenergebnis = True
 ---
 id: juja-2022/mitglieder
 section: Musiker\*innen
-prevent going back: True
 question: Bandmitglieder
 subquestion: |
   Um die Anmeldung für **${ ensemble.name }** zum Landeswettbewerb Jugend
@@ -516,7 +518,12 @@ fields:
     datatype: yesnowide
 list collect:
   add another label: Bandmitglied hinzufügen
-continue button label: Abschicken
+continue button label: |
+  % if Mitspielende:
+  Weiter
+  % else:
+  Abschicken
+  % endif
 ---
 id: juja-2022/bestaetigung
 event: Fertig

@@ -20,12 +20,10 @@ können wir Ihre Anmeldung nicht akzeptieren.
 
 Sie können diese E-Mail bei Bedarf über die "Drucken" Funktion als PDF abspeichern.
 
-# Ihre eingereichte Anmeldung
-
-## Angaben zum Ensemble
+## Ihre eingereichte Anmeldung
 |Feld                  |Ihre Angabe                                                                                                 |
 |----------------------|------------------------------------------------------------------------------------------------------------|
-|Name                  |${ verbatim(ensemble.name) }                                                                                |
+|Jazzorchester         |${ verbatim(ensemble.name) }                                                                                |
 |Künstlerische Leitung |${ verbatim(ensemble.leader) } ${ '&lt;' + ensemble.leader_mail + '&gt;' if ensemble.leader_mail else '' }  |
 |Größe                 |${ ensemble.size }                                                                                          |
 |Homepage              |${ verbatim(ensemble.homepage) }                                                                            |
@@ -66,13 +64,21 @@ ${ quote_paragraphs(ensemble.description) }
 
 ## Programm für das Wertungsspiel
 
-${ songs.table }
+|Titel |Komponist\*in |Arrangeur\*in |Verlag |Spieldauer |
+|------|--------------|--------------|-------|-----------|
+% for song in songs:
+|${ song.name.text } | ${ song.composer } | ${ song.arranger } | ${ song.publisher } | ${ song.duration } |
+% endfor
 
 ---
 % if Mitspielende:
 ## Musiker\*innen
 
-${ members.table }
+|Name |Geburtstag |Wohnort |Instrument |Position |Schüler\*in |Schule |Tätigkeit |Profi |
+|-----|-----------|--------|-----------|---------|------------|-------|----------|------|
+% for member in members:
+|${ member.name.full() } |${ member.birthday } |${ member.address.city } |${ member.instrument } |${ member.position } |${ member.student } |${ member.school } |${ member.occupation } |${ member.professional } |
+% endfor
 
 ---
 % endif

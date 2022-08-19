@@ -169,7 +169,7 @@ code: |
 ---
 
 ---
-need: [members.gathered]
+need: [members]
 code: |
   import io
   import pandas as pd
@@ -180,13 +180,13 @@ code: |
     with pd.ExcelWriter(f, engine='xlsxwriter') as writer:
       member_data.to_excel(writer, sheet_name="Bandmitglieder", index=False, freeze_panes=(1,0))
       worksheet = writer.sheets["Bandmitglieder"]
-      worksheet.write_string(len(member_data) + 2, 0, "Altersdurchschnitt")
+      worksheet.write_string(len(member_data) + 2, 1, "Altersdurchschnitt")
       worksheet.write_dynamic_array_formula(
         len(member_data) + 2,
-        1,
+        2,
         len(member_data) + 2,
-        1,
-        f'=AVERAGE(DATEDIF(B2:B{len(member_data)+1}, "2022-09-01", "y"))'
+        2,
+        f'=AVERAGE(DATEDIF(C2:C{len(member_data)+1}, "2022-09-01", "y"))'
       )
       worksheet.set_header(
         f"&CMitglieder des Jazzorchesters {ensemble.name}"
