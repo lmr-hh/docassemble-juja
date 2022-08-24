@@ -215,7 +215,7 @@ validation code: |
 id: juja-2022/rechnung
 field: Rechnungsdaten
 section: Rechnungskontakt
-question: Rechnungskontakt
+question: Teilnahmebeitrag und Rechnungskontakt
 subquestion: |
   Für die Teilnahme am Landeswettbewerb wird ein Teilnahmebeitrag von **50,00 €** pro
   Ensemble erhoben. Nach Abschicken dieser Anmeldung erhalten Sie eine Rechnung.
@@ -290,8 +290,10 @@ subquestion: |
 fields:
   - Bevorzugter Zeitraum am Samstag, 12. November: preferred_times.saturday
     required: False
+    hint: "... bis ..."
   - Bevorzugter Zeitraum am Sonntag, 13. November: preferred_times.sunday
     required: False
+    hint: "... bis ..."
   - note: |
       Um am Wettbewerb teilnehmen zu können, müssen Sie den folgenden
       Teilnahmebedingungen zustimmen.
