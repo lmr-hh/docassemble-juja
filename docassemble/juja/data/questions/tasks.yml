@@ -284,18 +284,19 @@ code: |
   )
   json_response(result)
 ---
+need: msgraph
 initial: True
 code: |
   if url_args.get('repair', False):
     # Ensure Data is complete
-    need(rechnungsnummer, rechnung, msgraph, members)
+    table_data = dict(registration_data)
+    table_data["Jazzorchester"] += " (Reparatur)"
     songs.gather()
     members.gather()
+    need(rechnung)
   
     member_data = members.table.as_df()
     lineup = songs.table.as_df()
-    table_data = dict(registration_data)
-    table_data["Jazzorchester"] += " (Reparatur)"
   
     import io
     import pandas as pd
