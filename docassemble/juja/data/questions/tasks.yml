@@ -141,10 +141,10 @@ code: |
       f
     )
   
-  assert invoice_response.raise_for_status()
-  assert photo_response.raise_for_status()
-  assert desc_response.raise_for_status()
-  assert lineup_response.raise_for_status()
+  invoice_response.raise_for_status()
+  photo_response.raise_for_status()
+  desc_response.raise_for_status()
+  lineup_response.raise_for_status()
   
   del (
     drive,
@@ -202,7 +202,7 @@ code: |
       f
     )
   
-  assert response.raise_for_status() 
+  response.raise_for_status() 
   del (
     member_data,
     f,
