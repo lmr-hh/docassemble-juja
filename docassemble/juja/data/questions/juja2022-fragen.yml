@@ -550,6 +550,14 @@ subquestion: |
 buttons:
   - Fertig: leave
 ---
+event: Repair
+question: Reparatur
+subquestion: |
+  Wir haben Ihre Anmeldung erneut abgeschickt. Alle Daten wurden erfolgreich
+  übermittelt.
+buttons:
+  - Weiter: continue
+---
 template: testergebnis
 usedefs: [test_defs]
 content file: Testmodus.md
