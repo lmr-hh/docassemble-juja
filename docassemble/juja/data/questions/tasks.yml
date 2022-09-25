@@ -103,7 +103,7 @@ code: |
   archive_folder = msgraph.post(
     f"drives/{drive}/items/{folder}/children",
     json={
-      "name": ensemble.name,
+      "name": "".join(x for x in ensemble.name if x.isalnum()),
       "folder": {},
       "@microsoft.graph.conflictBehavior": "rename"
     }
@@ -124,7 +124,7 @@ code: |
       "Foto." + photo.extension,
       f
     )
-  with io.StringIO(ensemble.description) as f:
+  with io.BytesIO(ensemble.description.encode()) as f:
     desc_response = msgraph.upload_file(
       drive,
       archive_folder,
@@ -283,3 +283,114 @@ code: |
     template=interview_url_email
   )
   json_response(result)
+---
+initial: True
+code: |
+  if url_args.get('repair', False):
+    # Ensure Data is complete
+    need(rechnungsnummer, rechnung, msgraph, members)
+    songs.gather()
+    members.gather()
+  
+    member_data = members.table.as_df()
+    lineup = songs.table.as_df()
+    table_data = dict(registration_data)
+    table_data["Jazzorchester"] += " (Reparatur)"
+  
+    import io
+    import pandas as pd
+    drive = daten["Anmeldungen"]["Bibliothek"]
+    folder = daten["Anmeldungen"]["Ordner"]
+  
+    msgraph.add_table_data(
+      daten["Anmeldungen"]["Bibliothek"],
+      daten["Anmeldungen"]["Dokument"],
+      daten["Anmeldungen"]["Tabelle"],
+      table_data
+    ).json()
+  
+    if not defined('archive_folder'):
+      archive_folder = msgraph.post(
+        f"drives/{drive}/items/{folder}/children",
+        json={
+          "name": "".join(x for x in ensemble.name if x.isalnum()) + " (Reparatur)",
+          "folder": {},
+          "@microsoft.graph.conflictBehavior": "rename"
+        }
+      ).json()["id"]
+  
+    with open(rechnung.pdf.path(), 'rb') as f:
+      invoice_response = msgraph.upload_file(
+        drive,
+        archive_folder,
+        rechnung.pdf.filename,
+        f
+      )
+    with io.BytesIO() as f:
+      lineup.to_excel(f, sheet_name="Programm", index=False, freeze_panes=(1,0))
+      f.seek(0)
+      lineup_response = msgraph.upload_file(
+        drive,
+        archive_folder,
+        "Programm.xlsx",
+        f
+      )
+    photo = ensemble.photo[0]
+    with open(photo.path(), 'rb') as f:
+      photo_response = msgraph.upload_file(
+        drive,
+        archive_folder,
+        "Foto." + photo.extension,
+        f
+      )
+    with io.BytesIO(ensemble.description.encode()) as f:
+      desc_response = msgraph.upload_file(
+        drive,
+        archive_folder,
+        "Beschreibung.txt",
+        f
+      )
+  
+    with io.BytesIO() as f:
+      with pd.ExcelWriter(f, engine='xlsxwriter') as writer:
+        member_data.to_excel(writer, sheet_name="Bandmitglieder", index=False, freeze_panes=(1,0))
+        worksheet = writer.sheets["Bandmitglieder"]
+        worksheet.write_string(len(member_data) + 2, 1, "Altersdurchschnitt")
+        worksheet.write_dynamic_array_formula(
+          len(member_data) + 2,
+          2,
+          len(member_data) + 2,
+          2,
+          f'=AVERAGE(DATEDIF(C2:C{len(member_data)+1}, "2022-09-01", "y"))'
+        )
+        worksheet.set_header(
+          f"&CMitglieder des Jazzorchesters {ensemble.name}"
+        )
+        worksheet.set_footer(
+          "Seite &P von &N"
+        )
+      f.seek(0)
+      members_response = msgraph.upload_file(
+        daten["Anmeldungen"]["Bibliothek"],
+        archive_folder,
+        "Mitglieder.xlsx",
+        f
+      )
+  
+    lineup_response.raise_for_status()
+    desc_response.raise_for_status()
+    members_response.raise_for_status()
+    invoice_response.raise_for_status()
+    photo_response.raise_for_status()
+
+    del (
+      photo, f, drive, folder, lineup, writer, member_data, worksheet, io, pd,
+      members_response, 
+      invoice_response,
+      photo_response,
+      desc_response,
+      lineup_response,
+      table_data
+    )
+    url_args['repair'] = False
+    Repair
