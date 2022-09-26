@@ -12,8 +12,6 @@ objects:
   billing_contact: Person
   conditions: DAObject
   preferred_times: DAObject
-  songs: DAList.using(object_type=Thing, minimum_number=2, there_are_any=True)
-  members: DAList.using(object_type=Individual, minimum_number=2 if testmodus else 11, there_are_any=True)
   redis: DARedis
 ---
 modules:

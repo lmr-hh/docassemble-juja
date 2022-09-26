@@ -5,18 +5,21 @@ in Hamburg 2022. Hiermit bestätigen wir Ihnen den Eingang Ihrer Anmeldung. Sie
 erhalten im Folgenden eine Übersicht über die von Ihnen angegebenen Daten sowie
 die Rechnung zur Überweisung des Teilnahmebeitrags.
 
-% if Mitspielende:
-Bitte beachten Sie, dass die Anmeldung erst mit Eingang des Teilnahmebeitrages vollständig ist.
-Ist dies bis zum Anmeldeschluss am 26. September nicht der Fall, können wir Ihre Anmeldung nicht akzeptieren.
-% else:
-Bitte beachten Sie, dass Sie noch die Namen der Musiker\*innen angeben müssen.
-Die Anmeldung ist erst vollständig wenn die Namen der Musiker\*innen vorliegen
-und der Teilnahmebetrag überwiesen ist.
-Liegen die genannten Unterlagen bis zum Anmeldeschluss am 26. September nicht vor,
-können wir Ihre Anmeldung nicht akzeptieren.
+Damit Ihre Anmeldung vollständig ist, benötigen wir von Ihnen noch folgende Daten:
 
-[Jetzt Daten angeben](${ interview_url_action('gather_members') })
-% endif
+- Ein vollständige Liste der teilnehmenden Musiker\*innen (exkl. Bandleader).
+  Für jede Person brauchen wir folgende Angaben: Vorname, Nachname, Geburtstag,
+  Wohnort, Instrument, Position (1. Trompete, ...), bei Schülern eine Angabe,
+  welche Schule besucht wird, ansonsten eine Angabe der aktuellen Tätigkeit.
+  Wenn Profi-Musiker\*innen dabei sind, sollten diese entsprechend gekennzeichnet
+  werden.
+- Eine Angabe des Programms, das gespielt wird. Für jedes der Stücke benötigen
+  wir folgende Angaben: Titel, Komponist\*in, ggf. Arrangeur\*in, Verlag,
+  ungefähre Spieldauer.
+
+Beachten Sie außerdem, dass der Teilnahmebeitrag rechtzeitig überwiesen werden muss.
+Liegen die genannten Unterlagen bis zum Anmeldeschluss am 3. Oktober nicht vor,
+können wir Ihre Anmeldung nicht akzeptieren.
 
 Sie können diese E-Mail bei Bedarf über die "Drucken" Funktion als PDF abspeichern.
 
@@ -61,27 +64,6 @@ ${ quote_paragraphs(ensemble.description) }
 |Adresse            |${ adresse(admin_contact) }                  |
 
 ---
-
-## Programm für das Wertungsspiel
-
-|Titel |Komponist\*in |Arrangeur\*in |Verlag |Spieldauer |
-|------|--------------|--------------|-------|-----------|
-% for song in songs:
-|${ song.name.text } | ${ song.composer } | ${ song.arranger } | ${ song.publisher } | ${ song.duration } |
-% endfor
-
----
-% if Mitspielende:
-## Musiker\*innen
-
-|Name |Geburtstag |Wohnort |Instrument |Position |Schüler\*in |Schule |Tätigkeit |Profi |
-|-----|-----------|--------|-----------|---------|------------|-------|----------|------|
-% for member in members:
-|${ member.name.full() } |${ member.birthday } |${ member.address.city } |${ member.instrument } |${ member.position } |${ 'Ja' if member.student else 'Nein' } |${ member.school if defined('member.school') else '' } |${ member.occupation if defined('member.occupation') else '' } |${ 'Ja' if defined('member.professional') and member.professional else 'Nein' } |
-% endfor
-
----
-% endif
 
 ## Teilnahmebedingungen und Datenschutz
 

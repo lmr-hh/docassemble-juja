@@ -98,7 +98,6 @@ code: |
   background = interface() in {"worker", "cron"}
   drive = daten["Anmeldungen"]["Bibliothek"]
   folder = daten["Anmeldungen"]["Ordner"]
-  lineup = songs.table.as_df()
   
   archive_folder = msgraph.post(
     f"drives/{drive}/items/{folder}/children",
@@ -131,33 +130,21 @@ code: |
       "Beschreibung.txt",
       f
     )
-  with io.BytesIO() as f:
-    lineup.to_excel(f, sheet_name="Programm", index=False, freeze_panes=(1,0))
-    f.seek(0)
-    lineup_response = msgraph.upload_file(
-      drive,
-      archive_folder,
-      "Programm.xlsx",
-      f
-    )
   
   invoice_response.raise_for_status()
   photo_response.raise_for_status()
   desc_response.raise_for_status()
-  lineup_response.raise_for_status()
   
   del (
     drive,
     folder,
     photo,
-    lineup,
     f,
     io,
     pd,
     invoice_response,
     photo_response,
     desc_response,
-    lineup_response
   )
   if background:
       background_response_action(
@@ -166,53 +153,6 @@ code: |
       )
   else:
     json_response({})
----
-
----
-need: [members]
-code: |
-  import io
-  import pandas as pd
-  
-  member_data = members.table.as_df()
-  
-  with io.BytesIO() as f:
-    with pd.ExcelWriter(f, engine='xlsxwriter') as writer:
-      member_data.to_excel(writer, sheet_name="Bandmitglieder", index=False, freeze_panes=(1,0))
-      worksheet = writer.sheets["Bandmitglieder"]
-      worksheet.write_string(len(member_data) + 2, 1, "Altersdurchschnitt")
-      worksheet.write_dynamic_array_formula(
-        len(member_data) + 2,
-        2,
-        len(member_data) + 2,
-        2,
-        f'=AVERAGE(DATEDIF(C2:C{len(member_data)+1}, "2022-09-01", "y"))'
-      )
-      worksheet.set_header(
-        f"&CMitglieder des Jazzorchesters {ensemble.name}"
-      )
-      worksheet.set_footer(
-        "Seite &P von &N"
-      )
-    f.seek(0)
-    response = msgraph.upload_file(
-      daten["Anmeldungen"]["Bibliothek"],
-      archive_folder,
-      "Mitglieder.xlsx",
-      f
-    )
-  
-  response.raise_for_status() 
-  del (
-    member_data,
-    f,
-    writer,
-    worksheet,
-    response,
-    io,
-    pd
-  )
-  MitgliederUpdate = True
 ---
 
 ---
@@ -291,12 +231,7 @@ code: |
     # Ensure Data is complete
     table_data = dict(registration_data)
     table_data["Jazzorchester"] += " (Reparatur)"
-    songs.gather()
-    members.gather()
     need(rechnung)
-  
-    member_data = members.table.as_df()
-    lineup = songs.table.as_df()
   
     import io
     import pandas as pd
@@ -327,15 +262,6 @@ code: |
         rechnung.pdf.filename,
         f
       )
-    with io.BytesIO() as f:
-      lineup.to_excel(f, sheet_name="Programm", index=False, freeze_panes=(1,0))
-      f.seek(0)
-      lineup_response = msgraph.upload_file(
-        drive,
-        archive_folder,
-        "Programm.xlsx",
-        f
-      )
     photo = ensemble.photo[0]
     with open(photo.path(), 'rb') as f:
       photo_response = msgraph.upload_file(
@@ -352,47 +278,15 @@ code: |
         f
       )
   
-    with io.BytesIO() as f:
-      with pd.ExcelWriter(f, engine='xlsxwriter') as writer:
-        member_data.to_excel(writer, sheet_name="Bandmitglieder", index=False, freeze_panes=(1,0))
-        worksheet = writer.sheets["Bandmitglieder"]
-        worksheet.write_string(len(member_data) + 2, 1, "Altersdurchschnitt")
-        worksheet.write_dynamic_array_formula(
-          len(member_data) + 2,
-          2,
-          len(member_data) + 2,
-          2,
-          f'=AVERAGE(DATEDIF(C2:C{len(member_data)+1}, "2022-09-01", "y"))'
-        )
-        worksheet.set_header(
-          f"&CMitglieder des Jazzorchesters {ensemble.name}"
-        )
-        worksheet.set_footer(
-          "Seite &P von &N"
-        )
-      f.seek(0)
-      members_response = msgraph.upload_file(
-        daten["Anmeldungen"]["Bibliothek"],
-        archive_folder,
-        "Mitglieder.xlsx",
-        f
-      )
-  
-    members_response.raise_for_status()
-    lineup_response.raise_for_status()
     desc_response.raise_for_status()
     invoice_response.raise_for_status()
     photo_response.raise_for_status()
   
-    MitgliederUpdate = True
-
     del (
-      photo, f, drive, folder, lineup, writer, member_data, worksheet, io, pd,
-      members_response, 
+      photo, f, drive, folder, writer, worksheet, io, pd,
       invoice_response,
       photo_response,
       desc_response,
-      lineup_response,
       table_data
     )
     url_args['repair'] = False
