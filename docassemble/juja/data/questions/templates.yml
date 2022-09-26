@@ -1,33 +1,3 @@
-table: songs.table
-rows: songs
-columns:
-  - Titel: row_item.name.full()
-  - Komponist: row_item.composer
-  - Arrangeur: row_item.arranger
-  - Verlag: row_item.publisher
-  - Spieldauer: row_item.duration
-allow reordering: True
-edit:
-  - name.text
----
-table: members.table
-rows: members
-columns:
-  - Vorname: row_item.name.first
-  - Nachname: row_item.name.last
-  - Geburtstag: row_item.birthday
-  - Wohnort: row_item.address.city
-  - Instrument: row_item.instrument
-  - Position: row_item.position
-  - Schule: |
-      row_item.school if row_item.student else ''
-  - Aktuelle Tätigkeit: |
-      row_item.occupation if not row_item.student else ''
-  - Profi: |
-      "Ja" if hasattr(row_item, 'professional') and row_item.professional else "Nein"
-edit:
-  - name.first
----
 code: |
   key = "juja_rechnungsnummer"
   if testmodus:
