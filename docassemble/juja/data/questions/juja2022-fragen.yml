@@ -411,7 +411,7 @@ subquestion:
   Sie dieses Fenster geöffnet, bis die Anmeldung erfolgreich abgeschickt wurde.
 ---
 id: juja-2022/zwischnergebnis
-field: Fertig
+event: Fertig
 section: Ihre Anmeldung
 prevent going back: True
 question: Ihre Anmeldung
