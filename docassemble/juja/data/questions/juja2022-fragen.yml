@@ -88,6 +88,11 @@ subquestion: |
   </div>
   % endif
   
+  <div class="alert alert-warning" role="alert">
+  <strong>Anmeldefrist geändert</strong>: Eine Anmeldung zu Jugend Jazzt ist nun noch bis
+  einschließlich 2. Oktober möglich.
+  </div>
+  
   Liebe Bigbandleiter\*innen, liebe Jazzer\*innen,
   
   herzlich willkommen bei der Anmeldung zum Landeswettbewerb **Jugend Jazzt**
@@ -111,10 +116,10 @@ subquestion: |
   Sie sich bitte per Mail mit dem Organisationsteam vom Landeswettbewerb Jugend
   Jazzt über [juja@lmr-hh.de](mailto:juja@lmr-hh.de) Hamburg in Verbindung:
   
-  Die Liste der Bandmitglieder können Sie auch nachträglich einreichen. Beachten
-  Sie jedoch, dass Ihre Anmeldung erst als eingereicht gilt, wenn Sie die
-  vollständige Liste der Bandmitglieder bis zum Anmeldeschluss am 26. September
-  2022 eingereicht haben.
+  Die Liste der Bandmitglieder sowie das Programm für das Wertungsspiel können
+  Sie auch nachträglich einreichen. Beachten Sie jedoch, dass Ihre Anmeldung
+  erst als eingereicht gilt, wenn Sie die vollständige Liste der Bandmitglieder
+  bis zum Anmeldeschluss am 3. Oktober 2022 eingereicht haben.
   
   Wir freuen uns auf Ihre Teilnahme!
 under: |
@@ -367,7 +372,7 @@ review:
       |Telefonnummer      |${ verbatim(billing_contact.phone_number) } |
       |Adresse            |${ adresse(admin_contact) }                 |
 
-  - Erneut ansehen: Teilnahmebedingungen
+  - Angaben ändern: Teilnahmebedingungen
     button: |
       ## Teilnahmebedingungen und Datenschutz
 
@@ -421,8 +426,8 @@ subquestion: |
   der Mitspielenden Musiker\*innen sowie das geplante Programm zugeschickt haben
   und der Teilnahmebeitrag überwiesen ist.
   
-  Genaue Details, welche Daten wir brauchen, erhalten Sie in der Mail zur
-  Anmeldebestätigung.
+  Genaue Details, welche Daten wir brauchen, entnehmen Sie in der
+  Anmeldebestätigung per E-Mail.
 buttons:
   - Beenden: leave
 ---
