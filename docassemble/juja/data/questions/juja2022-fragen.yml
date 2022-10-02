@@ -48,7 +48,8 @@ sections:
 # Funktion, die nicht leichtfertig verändert werden sollte.
 mandatory: True
 code: |
-  Anmeldefrist
+  if date_difference(ending='2022-10-03', timezone='Europe/Berlin').seconds <= 0:
+    Anmeldefrist
   Konfiguration
   Einleitung
   Ensemble
