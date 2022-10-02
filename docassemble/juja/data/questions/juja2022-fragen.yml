@@ -48,7 +48,7 @@ sections:
 # Funktion, die nicht leichtfertig verändert werden sollte.
 mandatory: True
 code: |
-  # Anmeldefrist
+  Anmeldefrist
   Konfiguration
   Einleitung
   Ensemble
@@ -71,7 +71,7 @@ subquestion: |
 
   Wenn Sie sich bereits angemeldet haben, erhalten Sie per E-Mail alle weiteren
   Informationen. Wenden Sie sich bei Fragen bitte per Mail an das Jugend Jazzt
-  Team des Landesmusikrates Hamburg: [juja@lmr-hh.de](mailto:juja@lmr-hh.de]
+  Team des Landesmusikrates Hamburg: [juja@lmr-hh.de](mailto:juja@lmr-hh.de).
 under: ""
 buttons:
   - Ende: exit
